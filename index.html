@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte de Ventas Automatizado</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background-color: #060b13;
+      color: #ffffff;
+      margin: 0;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .main-card {
+      width: 100%;
+      max-width: 950px;
+      background-color: #0b1526;
+      border: 1px solid #1a2f4c;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+    }
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: #08101d;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid #1a2f4c;
+    }
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+    select, input[type="date"] {
+      background: #0d1e38;
+      color: #38bdf8;
+      border: 1px solid #38bdf8;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      outline: none;
+    }
+    .grid-charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 768px) {
+      .grid-charts { grid-template-columns: 1fr; }
+    }
+    .chart-box {
+      background: #08101d;
+      border: 1px solid #1a2f4c;
+      border-radius: 8px;
+      padding: 15px;
+      position: relative;
+      height: 380px;
+      display: flex;
+      flex-direction: column;
+    }
+    .chart-title {
+      text-align: center;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .donut-container {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .donut-center-text {
+      position: absolute;
+      top: 50%;
+      left: 32%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .donut-center-text .number {
+      font-size: 38px;
+      font-weight: bold;
+      color: #00ff66;
+      line-height: 1;
+    }
+    .donut-center-text .label {
+      font-size: 11px;
+      color: #94a3b8;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+    .promo-section {
+      background: #08101d;
+      border: 1px solid #1a2f4c;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+    .promo-grid {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .promo-item { text-align: center; min-width: 65px; }
+    .promo-badge {
+      width: 32px; height: 32px; border-radius: 50%;
+      margin: 0 auto 5px auto;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 14px; color: #ffffff;
+    }
+    .promo-name { font-size: 11px; color: #64748b; font-weight: bold; }
+    .status-bar {
+      text-align: center;
+      font-size: 12px;
+      color: #38bdf8;
+      padding: 8px;
+    }
+    .btn-refresh {
+      background: #38bdf8;
+      color: #060b13;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-card">
+  <div class="header">
+    <div class="header-title">
+      <span>REPORTE DE VENTAS DE LA</span>
+      <select id="turnoSelect">
+        <option value="MAÑANA" selected>MAÑANA</option>
+        <option value="NOCHE">NOCHE</option>
+      </select>
+    </div>
+    <div>
+      <input type="date" id="fechaReporte" value="2026-09-28">
+    </div>
+  </div>
+
+  <div class="grid-charts">
+    <div class="chart-box">
+      <div class="chart-title">VENTAS POR ASESOR</div>
+      <div style="flex:1; position:relative;"><canvas id="barChart"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">PORCENTAJE DEL TOTAL</div>
+      <div class="donut-container">
+        <canvas id="donutChart"></canvas>
+        <div class="donut-center-text">
+          <div class="number" id="totalVentasCentral">0</div>
+          <div class="label">VENTAS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="promo-section">
+    <div style="font-size: 13px; font-weight: bold; color: #94a3b8; margin-bottom: 15px;">
+      RESUMEN | TOTAL DE PROMOCIONES: <span id="totalPromosHeader" style="color:#ffffff;">0</span>
+    </div>
+    <div class="promo-grid" id="promoGrid"></div>
+  </div>
+
+  <div class="status-bar" id="statusMsg">🔄 Sincronizando datos...</div>
+  <button class="btn-refresh" onclick="cargarDesdeGoogleSheets()">⚡ ACTUALIZAR DATOS AHORA</button>
+</div>
+
+<script>
+  Chart.register(ChartDataLabels);
+
+  const URL_GOOGLE_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_jvQqulBnFxZSj_NaZWpnNSTDkPcZSksGLFR8Lm8M7X6cSKe8hZp-jlnpAQ6KqfbI0Y7OOU7gw1WR/pub?gid=0&single=true&output=csv";
+
+  const coloresNeon = ['#ff6b00', '#00d2ff', '#00ff66', '#e056fd', '#f1c40f', '#ff4757', '#70a1ff', '#2ed573', '#eccc68', '#ff7f50', '#a4b0be', '#a55eea'];
+
+  const productosCatalogo = [
+    { nombre: 'CARDIOX', color: '#ef4444' },
+    { nombre: 'GLYCONORM', color: '#d97706' },
+    { nombre: 'PAPAYA', color: '#84cc16' },
+    { nombre: 'CALMANO', color: '#f59e0b' },
+    { nombre: 'FLEXACIL', color: '#06b6d4' },
+    { nombre: 'ALPHAMAN', color: '#8b5cf6' },
+    { nombre: 'MIX', color: '#ec4899' }
+  ];
+
+  let asesores = [];
+  let conteoProductos = {};
+  let barChart, donutChart;
+
+  function parseCSVLine(str) {
+    const arr = [];
+    let quote = false;
+    let col = '';
+    for (let c = 0; c < str.length; c++) {
+      const cc = str[c];
+      const nc = str[c+1];
+      if (cc === '"') {
+        if (quote && nc === '"') { col += '"'; c++; }
+        else { quote = !quote; }
+      } else if (cc === ',' && !quote) {
+        arr.push(col.trim());
+        col = '';
+      } else {
+        col += cc;
+      }
+    }
+    arr.push(col.trim());
+    return arr;
+  }
+
+  async function cargarDesdeGoogleSheets() {
+    const status = document.getElementById('statusMsg');
+    status.innerText = "🔄 Sincronizando con Google Sheets...";
+
+    try {
+      const response = await fetch(URL_GOOGLE_SHEETS + "&cachebust=" + new Date().getTime());
+      if (!response.ok) throw new Error("HTTP error " + response.status);
+      const csvText = await response.text();
+
+      procesarCSV(csvText);
+      status.innerText = "✅ Datos cargados exactamente (Filas 4 a 19)";
+    } catch (error) {
+      console.error("Error al cargar:", error);
+      status.innerText = "⚠️ No se pudo obtener datos automáticamente.";
+    }
+  }
+
+  function procesarCSV(text) {
+    asesores = [];
+    conteoProductos = { 'CARDIOX': 0, 'GLYCONORM': 0, 'PAPAYA': 0, 'CALMANO': 0, 'FLEXACIL': 0, 'ALPHAMAN': 0, 'MIX': 0 };
+
+    const lineas = text.split(/\r?\n/).filter(l => l.trim() !== '');
+    
+    // 1. Extraer la fecha de la celda C4 (Fila índice 3 en el CSV)
+    if (lineas.length >= 4) {
+      const fila4 = parseCSVLine(lineas[3]); // Fila 4 de Google Sheets
+      for (let col of fila4) {
+        const m = col.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (m) {
+          document.getElementById('fechaReporte').value = `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+          break;
+        }
+      }
+    }
+
+    // 2. DELIMITAR ESTRICTAMENTE A LAS FILAS 4 HASTA LA 19 (índices 3 al 18 en array)
+    const lineasRelevantes = lineas.slice(3, 19);
+
+    lineasRelevantes.forEach((linea) => {
+      const columnas = parseCSVLine(linea);
+
+      // En el CSV exportado, las celdas corresponden a las columnas de Excel
+      // Buscamos el nombre del Asesor y sus Ventas en las columnas
+      for (let i = 0; i < columnas.length - 1; i++) {
+        const nombreCand = columnas[i].trim();
+        const ventasCand = parseInt(columnas[i + 1]);
+
+        // Asegurarnos de capturar solo filas con Asesor válido
+        if (nombreCand && !isNaN(ventasCand) && ventasCand > 0) {
+          const nombreUpper = nombreCand.toUpperCase();
+          if (nombreUpper !== 'TOTAL DE VENTAS' && nombreUpper !== 'NRO VENTAS' && nombreUpper !== 'FECHA' && nombreUpper !== 'ASESOR') {
+            const promosStr = columnas[i + 2] || '';
+            asesores.push({ nombre: nombreUpper, ventas: ventasCand });
+
+            // Procesar las promociones registradas en esa fila
+            if (promosStr) {
+              const promosItems = promosStr.split('/');
+              promosItems.forEach(item => {
+                const pMatch = item.trim().match(/^(\d+)\s+(.+)$/);
+                if (pMatch) {
+                  const cant = parseInt(pMatch[1]);
+                  let pNombre = pMatch[2].trim().toUpperCase();
+
+                  if (pNombre === 'CALAMANO') pNombre = 'CALMANO';
+                  if (pNombre === 'GLYCO') pNombre = 'GLYCONORM';
+                  if (pNombre === 'FLEXA') pNombre = 'FLEXACIL';
+
+                  if (conteoProductos.hasOwnProperty(pNombre)) {
+                    conteoProductos[pNombre] += cant;
+                  } else {
+                    conteoProductos[pNombre] = cant;
+                  }
+                }
+              });
+            }
+            break;
+          }
+        }
+      }
+    });
+
+    // Ordenar de mayor a menor ventas
+    asesores.sort((a, b) => b.ventas - a.ventas);
+
+    // Numerar la lista en orden descendente
+    asesores = asesores.map((item, i) => ({
+      nombre: `${i + 1}. ${item.nombre}`,
+      ventas: item.ventas
+    }));
+
+    actualizarTodo();
+  }
+
+  function actualizarTodo() {
+    const totalVentas = asesores.reduce((a, b) => a + b.ventas, 0);
+    let totalPromos = 0;
+    Object.values(conteoProductos).forEach(c => totalPromos += c);
+
+    document.getElementById('totalVentasCentral').innerText = totalVentas;
+    document.getElementById('totalPromosHeader').innerText = totalPromos;
+
+    const pGrid = document.getElementById('promoGrid');
+    pGrid.innerHTML = '';
+    productosCatalogo.forEach(prod => {
+      const cant = conteoProductos[prod.nombre] || 0;
+      pGrid.innerHTML += `
+        <div class="promo-item">
+          <div class="promo-badge" style="background-color: ${cant > 0 ? prod.color : '#334155'};">${cant}</div>
+          <div class="promo-name">${prod.nombre}</div>
+        </div>`;
+    });
+
+    const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
+
+    if (barChart) barChart.destroy();
+    barChart = new Chart(document.getElementById('barChart'), {
+      type: 'bar',
+      data: {
+        labels: asesores.map(a => a.nombre),
+        datasets: [{ data: asesores.map(a => a.ventas), backgroundColor: bgColores, borderRadius: 4 }]
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          datalabels: { anchor: 'center', align: 'center', color: '#ffffff', font: { weight: 'bold', size: 11 }, formatter: (v) => v }
+        },
+        scales: { x: { grid: { color: '#1a2f4c' } }, y: { ticks: { color: '#ffffff', font: { size: 10, weight: 'bold' } } } }
+      }
+    });
+
+    if (donutChart) donutChart.destroy();
+    donutChart = new Chart(document.getElementById('donutChart'), {
+      type: 'doughnut',
+      data: {
+        labels: asesores.map(a => a.nombre),
+        datasets: [{ data: asesores.map(a => a.ventas), backgroundColor: bgColores, borderWidth: 0 }]
+      },
+      options: {
+        cutout: '72%', responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'right', labels: { color: '#fff', font: { size: 9 } } },
+          datalabels: {
+            color: '#ffffff', font: { weight: 'bold', size: 9 },
+            formatter: (v) => totalVentas === 0 ? '0%' : `~${((v / totalVentas) * 100).toFixed(1)}%`
+          }
+        }
+      }
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', cargarDesdeGoogleSheets);
+</script>
+
+</body>
+</html>
