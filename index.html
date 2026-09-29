@@ -141,6 +141,12 @@
       color: #38bdf8;
       padding: 8px;
     }
+    .last-update {
+      font-size: 11px;
+      color: #00ff66;
+      font-weight: bold;
+      margin-top: 3px;
+    }
     .btn-refresh {
       background: #38bdf8;
       color: #060b13;
@@ -150,6 +156,7 @@
       font-weight: bold;
       cursor: pointer;
       width: 100%;
+      margin-top: 5px;
     }
   </style>
 </head>
@@ -160,12 +167,12 @@
     <div class="header-title">
       <span>REPORTE DE VENTAS DE LA</span>
       <select id="turnoSelect">
-        <option value="MAÑANA" selected>MAÑANA</option>
+        <option value="MAÑANA">MAÑANA</option>
         <option value="NOCHE">NOCHE</option>
       </select>
     </div>
     <div>
-      <input type="date" id="fechaReporte" value="2026-09-28">
+      <input type="date" id="fechaReporte">
     </div>
   </div>
 
@@ -193,7 +200,10 @@
     <div class="promo-grid" id="promoGrid"></div>
   </div>
 
-  <div class="status-bar" id="statusMsg">🔄 Sincronizando datos...</div>
+  <div class="status-bar">
+    <div id="statusMsg">🔄 Sincronizando datos...</div>
+    <div class="last-update" id="lastUpdate">Última actualización: --:--:--</div>
+  </div>
   <button class="btn-refresh" onclick="cargarDesdeGoogleSheets()">⚡ ACTUALIZAR DATOS AHORA</button>
 </div>
 
@@ -239,8 +249,45 @@
     return arr;
   }
 
+  function actualizarFechaYTurnoAutomatico() {
+    const ahora = new Date();
+    
+    // Obtener la hora actual en huso horario de Venezuela (America/Caracas)
+    const opcionesHora = { timeZone: 'America/Caracas', hour: 'numeric', hour12: false };
+    const horaVE = parseInt(ahora.toLocaleTimeString('es-VE', opcionesHora));
+
+    // Determinar Turno: 6:00 AM (6) a 5:59 PM (17) es MAÑANA, de 18 a 5 es NOCHE
+    const selectTurno = document.getElementById('turnoSelect');
+    if (horaVE >= 6 && horaVE < 18) {
+      selectTurno.value = 'MAÑANA';
+    } else {
+      selectTurno.value = 'NOCHE';
+    }
+
+    // Fecha por defecto si no viniera en el CSV
+    const opcionesFecha = { timeZone: 'America/Caracas', year: 'numeric', month: '2-digit', day: '2-digit' };
+    const partesFecha = ahora.toLocaleDateString('es-VE', opcionesFecha).split('/');
+    if (partesFecha.length === 3) {
+      document.getElementById('fechaReporte').value = `${partesFecha[2]}-${partesFecha[1]}-${partesFecha[0]}`;
+    }
+  }
+
+  function obtenerHoraVenezuelaFormatted() {
+    const ahora = new Date();
+    return ahora.toLocaleTimeString('es-VE', {
+      timeZone: 'America/Caracas',
+      hour12: true,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  }
+
   async function cargarDesdeGoogleSheets() {
+    actualizarFechaYTurnoAutomatico();
+
     const status = document.getElementById('statusMsg');
+    const updateLabel = document.getElementById('lastUpdate');
     status.innerText = "🔄 Sincronizando con Google Sheets...";
 
     try {
@@ -249,7 +296,10 @@
       const csvText = await response.text();
 
       procesarCSV(csvText);
-      status.innerText = "✅ Datos cargados exactamente (Filas 4 a 19)";
+      
+      const horaVE = obtenerHoraVenezuelaFormatted();
+      status.innerText = "✅ Datos sincronizados correctamente";
+      updateLabel.innerText = `🕒 Última actualización: ${horaVE} (UTC-4 Venezuela)`;
     } catch (error) {
       console.error("Error al cargar:", error);
       status.innerText = "⚠️ No se pudo obtener datos automáticamente.";
@@ -262,9 +312,9 @@
 
     const lineas = text.split(/\r?\n/).filter(l => l.trim() !== '');
     
-    // 1. Extraer la fecha de la celda C4 (Fila índice 3 en el CSV)
+    // 1. Extraer la fecha de la celda C4 (Fila 4 de Google Sheets) si existe
     if (lineas.length >= 4) {
-      const fila4 = parseCSVLine(lineas[3]); // Fila 4 de Google Sheets
+      const fila4 = parseCSVLine(lineas[3]);
       for (let col of fila4) {
         const m = col.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
         if (m) {
@@ -280,20 +330,16 @@
     lineasRelevantes.forEach((linea) => {
       const columnas = parseCSVLine(linea);
 
-      // En el CSV exportado, las celdas corresponden a las columnas de Excel
-      // Buscamos el nombre del Asesor y sus Ventas en las columnas
       for (let i = 0; i < columnas.length - 1; i++) {
         const nombreCand = columnas[i].trim();
         const ventasCand = parseInt(columnas[i + 1]);
 
-        // Asegurarnos de capturar solo filas con Asesor válido
         if (nombreCand && !isNaN(ventasCand) && ventasCand > 0) {
           const nombreUpper = nombreCand.toUpperCase();
           if (nombreUpper !== 'TOTAL DE VENTAS' && nombreUpper !== 'NRO VENTAS' && nombreUpper !== 'FECHA' && nombreUpper !== 'ASESOR') {
             const promosStr = columnas[i + 2] || '';
             asesores.push({ nombre: nombreUpper, ventas: ventasCand });
 
-            // Procesar las promociones registradas en esa fila
             if (promosStr) {
               const promosItems = promosStr.split('/');
               promosItems.forEach(item => {
