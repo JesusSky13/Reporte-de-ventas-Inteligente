@@ -72,7 +72,8 @@
       border-radius: 8px;
       padding: 15px;
       position: relative;
-      height: 380px;
+      /* Altura flexible adaptativa según cantidad de asesores */
+      min-height: 400px;
       display: flex;
       flex-direction: column;
     }
@@ -87,7 +88,7 @@
       position: relative;
       flex: 1;
       width: 100%;
-      height: 100%;
+      min-height: 350px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -177,7 +178,7 @@
   </div>
 
   <div class="grid-charts">
-    <div class="chart-box">
+    <div class="chart-box" id="boxBarChart">
       <div class="chart-title">VENTAS POR ASESOR</div>
       <div style="flex:1; position:relative;"><canvas id="barChart"></canvas></div>
     </div>
@@ -308,7 +309,6 @@
 
     const lineas = text.split(/\r?\n/);
     
-    // Extraer la fecha de la celda C4 si existe en las primeras líneas
     for (let i = 0; i < Math.min(lineas.length, 6); i++) {
       const fila = parseCSVLine(lineas[i]);
       for (let col of fila) {
@@ -320,4 +320,144 @@
       }
     }
 
-    //
+    let leyendoAsesores = false;
+
+    for (let idx = 0; idx < lineas.length; idx++) {
+      const linea = lineas[idx].trim();
+      if (!linea) continue;
+
+      const columnas = parseCSVLine(linea);
+      const nombreCand = (columnas[3] || '').trim();
+      const ventasCand = parseInt(columnas[4]);
+      const promosStr = (columnas[5] || '').trim();
+      const nombreUpper = nombreCand.toUpperCase();
+
+      if (nombreUpper === 'ASESOR' || nombreUpper === 'NRO VENTAS') {
+        leyendoAsesores = true;
+        continue;
+      }
+
+      if (nombreUpper.includes('TOTAL DE VENTAS') || nombreUpper.includes('TOTAL')) {
+        break;
+      }
+
+      if (leyendoAsesores || (nombreCand && !isNaN(ventasCand))) {
+        const esInvalido = [
+          'TOTAL DE VENTAS', 'NRO VENTAS', 'FECHA', 'ASESOR', 
+          'VENTAS', 'PROMOCIONES', ''
+        ].includes(nombreUpper);
+
+        if (!esInvalido && !isNaN(ventasCand) && ventasCand > 0) {
+          asesores.push({ nombre: nombreUpper, ventas: ventasCand });
+
+          if (promosStr) {
+            const promosItems = promosStr.split('/');
+            promosItems.forEach(item => {
+              const pMatch = item.trim().match(/^(\d+)\s+(.+)$/);
+              if (pMatch) {
+                const cant = parseInt(pMatch[1]);
+                let pNombre = pMatch[2].trim().toUpperCase();
+
+                if (pNombre === 'CALAMANO') pNombre = 'CALMANO';
+                if (pNombre === 'GLYCO') pNombre = 'GLYCONORM';
+                if (pNombre === 'FLEXA') pNombre = 'FLEXACIL';
+
+                if (conteoProductos.hasOwnProperty(pNombre)) {
+                  conteoProductos[pNombre] += cant;
+                } else {
+                  conteoProductos[pNombre] = cant;
+                }
+              }
+            });
+          }
+        }
+      }
+    }
+
+    asesores.sort((a, b) => b.ventas - a.ventas);
+
+    asesores = asesores.map((item, i) => ({
+      nombre: `${i + 1}. ${item.nombre}`,
+      ventas: item.ventas
+    }));
+
+    actualizarTodo();
+  }
+
+  function actualizarTodo() {
+    const totalVentas = asesores.reduce((a, b) => a + b.ventas, 0);
+    let totalPromos = 0;
+    Object.values(conteoProductos).forEach(c => totalPromos += c);
+
+    document.getElementById('totalVentasCentral').innerText = totalVentas;
+    document.getElementById('totalPromosHeader').innerText = totalPromos;
+
+    // Ajustar altura del contenedor de barras dinámicamente según la cantidad de asesores
+    const boxBar = document.getElementById('boxBarChart');
+    const alturaDinamica = Math.max(400, asesores.length * 28);
+    boxBar.style.height = alturaDinamica + 'px';
+
+    const pGrid = document.getElementById('promoGrid');
+    pGrid.innerHTML = '';
+    productosCatalogo.forEach(prod => {
+      const cant = conteoProductos[prod.nombre] || 0;
+      pGrid.innerHTML += `
+        <div class="promo-item">
+          <div class="promo-badge" style="background-color: ${cant > 0 ? prod.color : '#334155'};">${cant}</div>
+          <div class="promo-name">${prod.nombre}</div>
+        </div>`;
+    });
+
+    const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
+
+    if (barChart) barChart.destroy();
+    barChart = new Chart(document.getElementById('barChart'), {
+      type: 'bar',
+      data: {
+        labels: asesores.map(a => a.nombre),
+        datasets: [{ data: asesores.map(a => a.ventas), backgroundColor: bgColores, borderRadius: 4 }]
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          datalabels: { anchor: 'center', align: 'center', color: '#ffffff', font: { weight: 'bold', size: 10 }, formatter: (v) => v }
+        },
+        scales: {
+          x: { grid: { color: '#1a2f4c' } },
+          y: {
+            ticks: {
+              color: '#ffffff',
+              font: { size: 10, weight: 'bold' },
+              autoSkip: false // FUERZA A MOSTRAR TODOS LOS NOMBRES SIN OMITIR NINGUNO
+            }
+          }
+        }
+      }
+    });
+
+    if (donutChart) donutChart.destroy();
+    donutChart = new Chart(document.getElementById('donutChart'), {
+      type: 'doughnut',
+      data: {
+        labels: asesores.map(a => a.nombre),
+        datasets: [{ data: asesores.map(a => a.ventas), backgroundColor: bgColores, borderWidth: 0 }]
+      },
+      options: {
+        cutout: '72%', responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'right', labels: { color: '#fff', font: { size: 9 } } },
+          datalabels: {
+            color: '#ffffff', font: { weight: 'bold', size: 9 },
+            formatter: (v) => totalVentas === 0 ? '0%' : `~${((v / totalVentas) * 100).toFixed(1)}%`
+          }
+        }
+      }
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', cargarDesdeGoogleSheets);
+</script>
+
+</body>
+</html>
