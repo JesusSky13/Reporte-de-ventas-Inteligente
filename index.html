@@ -306,12 +306,12 @@
     asesores = [];
     conteoProductos = { 'CARDIOX': 0, 'GLYCONORM': 0, 'PAPAYA': 0, 'CALMANO': 0, 'FLEXACIL': 0, 'ALPHAMAN': 0, 'MIX': 0 };
 
-    const lineas = text.split(/\r?\n/).filter(l => l.trim() !== '');
+    const lineas = text.split(/\r?\n/);
     
-    // Extraer la fecha de la celda C4 si existe
-    if (lineas.length >= 4) {
-      const fila4 = parseCSVLine(lineas[3]);
-      for (let col of fila4) {
+    // Extraer la fecha de la celda C4 si existe en las primeras líneas
+    for (let i = 0; i < Math.min(lineas.length, 6); i++) {
+      const fila = parseCSVLine(lineas[i]);
+      for (let col of fila) {
         const m = col.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
         if (m) {
           document.getElementById('fechaReporte').value = `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
@@ -320,125 +320,4 @@
       }
     }
 
-    // AUTOMATIZACIÓN DINÁMICA:
-    // Arrancamos desde la fila 4 (índice 3) y leemos hacia abajo de forma continua
-    // hasta encontrar "TOTAL DE VENTAS" o llegar al final del archivo.
-    for (let idx = 3; idx < lineas.length; idx++) {
-      const columnas = parseCSVLine(lineas[idx]);
-      const nombreCand = (columnas[3] || '').trim();
-      const ventasCand = parseInt(columnas[4]);
-      const promosStr = (columnas[5] || '').trim();
-
-      const nombreUpper = nombreCand.toUpperCase();
-
-      // Si topamos con la fila de totales, detenemos la lectura automáticamente
-      if (nombreUpper.includes('TOTAL DE VENTAS') || nombreUpper.includes('TOTAL')) {
-        break;
-      }
-
-      if (nombreCand && !isNaN(ventasCand) && ventasCand > 0) {
-        const esInvalido = [
-          'NRO VENTAS', 'FECHA', 'ASESOR', 
-          'VENTAS', 'PROMOCIONES', ''
-        ].includes(nombreUpper);
-
-        if (!esInvalido) {
-          asesores.push({ nombre: nombreUpper, ventas: ventasCand });
-
-          if (promosStr) {
-            const promosItems = promosStr.split('/');
-            promosItems.forEach(item => {
-              const pMatch = item.trim().match(/^(\d+)\s+(.+)$/);
-              if (pMatch) {
-                const cant = parseInt(pMatch[1]);
-                let pNombre = pMatch[2].trim().toUpperCase();
-
-                if (pNombre === 'CALAMANO') pNombre = 'CALMANO';
-                if (pNombre === 'GLYCO') pNombre = 'GLYCONORM';
-                if (pNombre === 'FLEXA') pNombre = 'FLEXACIL';
-
-                if (conteoProductos.hasOwnProperty(pNombre)) {
-                  conteoProductos[pNombre] += cant;
-                } else {
-                  conteoProductos[pNombre] = cant;
-                }
-              }
-            });
-          }
-        }
-      }
-    }
-
-    asesores.sort((a, b) => b.ventas - a.ventas);
-
-    asesores = asesores.map((item, i) => ({
-      nombre: `${i + 1}. ${item.nombre}`,
-      ventas: item.ventas
-    }));
-
-    actualizarTodo();
-  }
-
-  function actualizarTodo() {
-    const totalVentas = asesores.reduce((a, b) => a + b.ventas, 0);
-    let totalPromos = 0;
-    Object.values(conteoProductos).forEach(c => totalPromos += c);
-
-    document.getElementById('totalVentasCentral').innerText = totalVentas;
-    document.getElementById('totalPromosHeader').innerText = totalPromos;
-
-    const pGrid = document.getElementById('promoGrid');
-    pGrid.innerHTML = '';
-    productosCatalogo.forEach(prod => {
-      const cant = conteoProductos[prod.nombre] || 0;
-      pGrid.innerHTML += `
-        <div class="promo-item">
-          <div class="promo-badge" style="background-color: ${cant > 0 ? prod.color : '#334155'};">${cant}</div>
-          <div class="promo-name">${prod.nombre}</div>
-        </div>`;
-    });
-
-    const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
-
-    if (barChart) barChart.destroy();
-    barChart = new Chart(document.getElementById('barChart'), {
-      type: 'bar',
-      data: {
-        labels: asesores.map(a => a.nombre),
-        datasets: [{ data: asesores.map(a => a.ventas), backgroundColor: bgColores, borderRadius: 4 }]
-      },
-      options: {
-        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          datalabels: { anchor: 'center', align: 'center', color: '#ffffff', font: { weight: 'bold', size: 11 }, formatter: (v) => v }
-        },
-        scales: { x: { grid: { color: '#1a2f4c' } }, y: { ticks: { color: '#ffffff', font: { size: 10, weight: 'bold' } } } }
-      }
-    });
-
-    if (donutChart) donutChart.destroy();
-    donutChart = new Chart(document.getElementById('donutChart'), {
-      type: 'doughnut',
-      data: {
-        labels: asesores.map(a => a.nombre),
-        datasets: [{ data: asesores.map(a => a.ventas), backgroundColor: bgColores, borderWidth: 0 }]
-      },
-      options: {
-        cutout: '72%', responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'right', labels: { color: '#fff', font: { size: 9 } } },
-          datalabels: {
-            color: '#ffffff', font: { weight: 'bold', size: 9 },
-            formatter: (v) => totalVentas === 0 ? '0%' : `~${((v / totalVentas) * 100).toFixed(1)}%`
-          }
-        }
-      }
-    });
-  }
-
-  window.addEventListener('DOMContentLoaded', cargarDesdeGoogleSheets);
-</script>
-
-</body>
-</html>
+    //
