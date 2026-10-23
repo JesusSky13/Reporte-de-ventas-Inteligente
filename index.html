@@ -326,7 +326,6 @@
     lineasRelevantes.forEach((linea) => {
       const columnas = parseCSVLine(linea);
 
-      // Índices estrictos basados en tu estructura de Google Sheets:
       // Columna D (Asesor) = Índice 3
       // Columna E (Nro Ventas) = Índice 4
       // Columna F (Promociones) = Índice 5
@@ -336,7 +335,14 @@
 
       if (nombreCand && !isNaN(ventasCand) && ventasCand > 0) {
         const nombreUpper = nombreCand.toUpperCase();
-        if (nombreUpper !== 'TOTAL DE VENTAS' && nombreUpper !== 'NRO VENTAS' && nombreUpper !== 'FECHA' && nombreUpper !== 'ASESOR') {
+        
+        // FILTRO ESTRICTO: Evitar títulos, palabras clave o nombres vacíos/fantasmas
+        const esInvalido = [
+          'TOTAL DE VENTAS', 'NRO VENTAS', 'FECHA', 'ASESOR', 
+          'VENTAS', 'PROMOCIONES', 'TOTAL', ''
+        ].includes(nombreUpper);
+
+        if (!esInvalido) {
           asesores.push({ nombre: nombreUpper, ventas: ventasCand });
 
           if (promosStr) {
