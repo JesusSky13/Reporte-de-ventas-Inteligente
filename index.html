@@ -308,6 +308,7 @@
 
     const lineas = text.split(/\r?\n/).filter(l => l.trim() !== '');
     
+    // Extraer la fecha de la celda C4 si existe
     if (lineas.length >= 4) {
       const fila4 = parseCSVLine(lineas[3]);
       for (let col of fila4) {
@@ -325,37 +326,38 @@
     lineasRelevantes.forEach((linea) => {
       const columnas = parseCSVLine(linea);
 
-      for (let i = 0; i < columnas.length - 1; i++) {
-        const nombreCand = columnas[i].trim();
-        const ventasCand = parseInt(columnas[i + 1]);
+      // Índices estrictos basados en tu estructura de Google Sheets:
+      // Columna D (Asesor) = Índice 3
+      // Columna E (Nro Ventas) = Índice 4
+      // Columna F (Promociones) = Índice 5
+      const nombreCand = (columnas[3] || '').trim();
+      const ventasCand = parseInt(columnas[4]);
+      const promosStr = (columnas[5] || '').trim();
 
-        if (nombreCand && !isNaN(ventasCand) && ventasCand > 0) {
-          const nombreUpper = nombreCand.toUpperCase();
-          if (nombreUpper !== 'TOTAL DE VENTAS' && nombreUpper !== 'NRO VENTAS' && nombreUpper !== 'FECHA' && nombreUpper !== 'ASESOR') {
-            const promosStr = columnas[i + 2] || '';
-            asesores.push({ nombre: nombreUpper, ventas: ventasCand });
+      if (nombreCand && !isNaN(ventasCand) && ventasCand > 0) {
+        const nombreUpper = nombreCand.toUpperCase();
+        if (nombreUpper !== 'TOTAL DE VENTAS' && nombreUpper !== 'NRO VENTAS' && nombreUpper !== 'FECHA' && nombreUpper !== 'ASESOR') {
+          asesores.push({ nombre: nombreUpper, ventas: ventasCand });
 
-            if (promosStr) {
-              const promosItems = promosStr.split('/');
-              promosItems.forEach(item => {
-                const pMatch = item.trim().match(/^(\d+)\s+(.+)$/);
-                if (pMatch) {
-                  const cant = parseInt(pMatch[1]);
-                  let pNombre = pMatch[2].trim().toUpperCase();
+          if (promosStr) {
+            const promosItems = promosStr.split('/');
+            promosItems.forEach(item => {
+              const pMatch = item.trim().match(/^(\d+)\s+(.+)$/);
+              if (pMatch) {
+                const cant = parseInt(pMatch[1]);
+                let pNombre = pMatch[2].trim().toUpperCase();
 
-                  if (pNombre === 'CALAMANO') pNombre = 'CALMANO';
-                  if (pNombre === 'GLYCO') pNombre = 'GLYCONORM';
-                  if (pNombre === 'FLEXA') pNombre = 'FLEXACIL';
+                if (pNombre === 'CALAMANO') pNombre = 'CALMANO';
+                if (pNombre === 'GLYCO') pNombre = 'GLYCONORM';
+                if (pNombre === 'FLEXA') pNombre = 'FLEXACIL';
 
-                  if (conteoProductos.hasOwnProperty(pNombre)) {
-                    conteoProductos[pNombre] += cant;
-                  } else {
-                    conteoProductos[pNombre] = cant;
-                  }
+                if (conteoProductos.hasOwnProperty(pNombre)) {
+                  conteoProductos[pNombre] += cant;
+                } else {
+                  conteoProductos[pNombre] = cant;
                 }
-              });
-            }
-            break;
+              }
+            });
           }
         }
       }
