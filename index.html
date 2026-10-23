@@ -320,26 +320,26 @@
       }
     }
 
-    // DELIMITAR ESTRICTAMENTE DE LA FILA 4 HASTA LA 24 (índices 3 al 23)
-    const lineasRelevantes = lineas.slice(3, 24);
-
-    lineasRelevantes.forEach((linea) => {
-      const columnas = parseCSVLine(linea);
-
-      // Columna D (Asesor) = Índice 3
-      // Columna E (Nro Ventas) = Índice 4
-      // Columna F (Promociones) = Índice 5
+    // AUTOMATIZACIÓN DINÁMICA:
+    // Arrancamos desde la fila 4 (índice 3) y leemos hacia abajo de forma continua
+    // hasta encontrar "TOTAL DE VENTAS" o llegar al final del archivo.
+    for (let idx = 3; idx < lineas.length; idx++) {
+      const columnas = parseCSVLine(lineas[idx]);
       const nombreCand = (columnas[3] || '').trim();
       const ventasCand = parseInt(columnas[4]);
       const promosStr = (columnas[5] || '').trim();
 
+      const nombreUpper = nombreCand.toUpperCase();
+
+      // Si topamos con la fila de totales, detenemos la lectura automáticamente
+      if (nombreUpper.includes('TOTAL DE VENTAS') || nombreUpper.includes('TOTAL')) {
+        break;
+      }
+
       if (nombreCand && !isNaN(ventasCand) && ventasCand > 0) {
-        const nombreUpper = nombreCand.toUpperCase();
-        
-        // FILTRO ESTRICTO: Evitar títulos, palabras clave o nombres vacíos/fantasmas
         const esInvalido = [
-          'TOTAL DE VENTAS', 'NRO VENTAS', 'FECHA', 'ASESOR', 
-          'VENTAS', 'PROMOCIONES', 'TOTAL', ''
+          'NRO VENTAS', 'FECHA', 'ASESOR', 
+          'VENTAS', 'PROMOCIONES', ''
         ].includes(nombreUpper);
 
         if (!esInvalido) {
@@ -367,7 +367,7 @@
           }
         }
       }
-    });
+    }
 
     asesores.sort((a, b) => b.ventas - a.ventas);
 
