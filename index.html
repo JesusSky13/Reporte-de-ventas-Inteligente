@@ -251,12 +251,9 @@
 
   function actualizarFechaYTurnoAutomatico() {
     const ahora = new Date();
-    
-    // Obtener la hora actual en huso horario de Venezuela (America/Caracas)
     const opcionesHora = { timeZone: 'America/Caracas', hour: 'numeric', hour12: false };
     const horaVE = parseInt(ahora.toLocaleTimeString('es-VE', opcionesHora));
 
-    // Determinar Turno: 6:00 AM (6) a 5:59 PM (17) es MAÑANA, de 18 a 5 es NOCHE
     const selectTurno = document.getElementById('turnoSelect');
     if (horaVE >= 6 && horaVE < 18) {
       selectTurno.value = 'MAÑANA';
@@ -264,7 +261,6 @@
       selectTurno.value = 'NOCHE';
     }
 
-    // Fecha por defecto si no viniera en el CSV
     const opcionesFecha = { timeZone: 'America/Caracas', year: 'numeric', month: '2-digit', day: '2-digit' };
     const partesFecha = ahora.toLocaleDateString('es-VE', opcionesFecha).split('/');
     if (partesFecha.length === 3) {
@@ -312,7 +308,6 @@
 
     const lineas = text.split(/\r?\n/).filter(l => l.trim() !== '');
     
-    // 1. Extraer la fecha de la celda C4 (Fila 4 de Google Sheets) si existe
     if (lineas.length >= 4) {
       const fila4 = parseCSVLine(lineas[3]);
       for (let col of fila4) {
@@ -324,7 +319,7 @@
       }
     }
 
-    // 2. DELIMITAR ESTRICTAMENTE A LAS FILAS 4 HASTA LA 24 (índices 3 al 23 en array)
+    // DELIMITAR ESTRICTAMENTE DE LA FILA 4 HASTA LA 24 (índices 3 al 23)
     const lineasRelevantes = lineas.slice(3, 24);
 
     lineasRelevantes.forEach((linea) => {
@@ -366,10 +361,8 @@
       }
     });
 
-    // Ordenar de mayor a menor ventas
     asesores.sort((a, b) => b.ventas - a.ventas);
 
-    // Numerar la lista en orden descendente
     asesores = asesores.map((item, i) => ({
       nombre: `${i + 1}. ${item.nombre}`,
       ventas: item.ventas
