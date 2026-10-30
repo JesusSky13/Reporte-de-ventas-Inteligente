@@ -375,9 +375,9 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
-    // Altura dinámica generosa para que cada barra tenga espacio para su texto de promociones debajo
-    const alturaDinamica = Math.max(350, asesores.length * 52);
-    document.getElementById('boxBarChart').style.height = (alturaDinamica + 60) + 'px';
+    // Altura ampliada y proporcional por cada asesor (75px por fila) para dar espacio holgado a las promociones
+    const alturaDinamica = Math.max(380, asesores.length * 75);
+    document.getElementById('boxBarChart').style.height = (alturaDinamica + 40) + 'px';
 
     if (barChart) barChart.destroy();
     barChart = new Chart(document.getElementById('barChart'), {
@@ -388,6 +388,8 @@
           data: asesores.map(a => a.ventas), 
           backgroundColor: bgColores, 
           borderRadius: 4,
+          barPercentage: 0.6,      // Controla el grosor de la barra para dejar espacio libre vertical
+          categoryPercentage: 0.7, // Controla la separación entre filas
           promociones: asesores.map(a => a.promociones)
         }]
       },
@@ -404,7 +406,6 @@
             font: { weight: 'bold', size: 10 }, 
             formatter: (v) => v 
           },
-          // Plugin personalizado para mostrar la descripción de promociones debajo de cada barra
           tooltip: { enabled: false }
         },
         scales: {
@@ -433,8 +434,8 @@
           dataset.data.forEach((val, index) => {
             const yPos = yScale.getPixelForTick(index);
             const promoText = dataset.promociones[index];
-            // Posicionamos el texto de promociones justo debajo de la etiqueta del eje Y / barra
-            ctx.fillText(`💡 ${promoText}`, chartArea.left, yPos + 13);
+            // Dibujamos la cápsula y el texto de las promociones con mayor separación vertical segura
+            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 18);
           });
           ctx.restore();
         }
