@@ -20,7 +20,7 @@
     }
     .main-card {
       width: 100%;
-      max-width: 950px;
+      max-width: 900px;
       background-color: #0b1526;
       border: 1px solid #1a2f4c;
       border-radius: 12px;
@@ -33,7 +33,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       background: #08101d;
       padding: 12px 15px;
       border-radius: 8px;
@@ -43,7 +43,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: bold;
       color: #38bdf8;
     }
@@ -53,18 +53,27 @@
       border: 1px solid #38bdf8;
       padding: 6px 10px;
       border-radius: 6px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
       outline: none;
     }
-    .grid-charts {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-bottom: 20px;
+    .total-sales-card {
+      background: #08101d;
+      border: 1px solid #1a2f4c;
+      border-radius: 8px;
+      padding: 8px 18px;
+      text-align: center;
+      margin: 0 auto 12px auto;
+      max-width: 280px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #94a3b8;
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.1);
     }
-    @media (max-width: 768px) {
-      .grid-charts { grid-template-columns: 1fr; }
+    .total-sales-number {
+      color: #00ff66;
+      font-size: 14px;
+      margin-left: 6px;
     }
     .chart-box {
       background: #08101d;
@@ -72,54 +81,21 @@
       border-radius: 8px;
       padding: 15px;
       position: relative;
-      /* Altura flexible adaptativa según cantidad de asesores */
-      min-height: 400px;
-      display: flex;
-      flex-direction: column;
+      margin-bottom: 12px;
     }
     .chart-title {
       text-align: center;
       font-size: 13px;
       color: #94a3b8;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       font-weight: bold;
-    }
-    .donut-container {
-      position: relative;
-      flex: 1;
-      width: 100%;
-      min-height: 350px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .donut-center-text {
-      position: absolute;
-      top: 50%;
-      left: 32%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      pointer-events: none;
-      z-index: 10;
-    }
-    .donut-center-text .number {
-      font-size: 38px;
-      font-weight: bold;
-      color: #00ff66;
-      line-height: 1;
-    }
-    .donut-center-text .label {
-      font-size: 11px;
-      color: #94a3b8;
-      letter-spacing: 1px;
-      margin-top: 4px;
     }
     .promo-section {
       background: #08101d;
       border: 1px solid #1a2f4c;
       border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
+      padding: 12px;
+      margin-bottom: 12px;
     }
     .promo-grid {
       display: flex;
@@ -128,25 +104,25 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .promo-item { text-align: center; min-width: 65px; }
+    .promo-item { text-align: center; min-width: 60px; }
     .promo-badge {
-      width: 32px; height: 32px; border-radius: 50%;
-      margin: 0 auto 5px auto;
+      width: 28px; height: 28px; border-radius: 50%;
+      margin: 0 auto 4px auto;
       display: flex; align-items: center; justify-content: center;
-      font-weight: bold; font-size: 14px; color: #ffffff;
+      font-weight: bold; font-size: 12px; color: #ffffff;
     }
-    .promo-name { font-size: 11px; color: #64748b; font-weight: bold; }
+    .promo-name { font-size: 10px; color: #64748b; font-weight: bold; }
     .status-bar {
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
       color: #38bdf8;
-      padding: 8px;
+      padding: 6px;
     }
     .last-update {
-      font-size: 11px;
+      font-size: 10px;
       color: #00ff66;
       font-weight: bold;
-      margin-top: 3px;
+      margin-top: 2px;
     }
     .btn-refresh {
       background: #38bdf8;
@@ -157,7 +133,7 @@
       font-weight: bold;
       cursor: pointer;
       width: 100%;
-      margin-top: 5px;
+      margin-top: 4px;
     }
   </style>
 </head>
@@ -177,25 +153,17 @@
     </div>
   </div>
 
-  <div class="grid-charts">
-    <div class="chart-box" id="boxBarChart">
-      <div class="chart-title">VENTAS POR ASESOR</div>
-      <div style="flex:1; position:relative;"><canvas id="barChart"></canvas></div>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">PORCENTAJE DEL TOTAL</div>
-      <div class="donut-container">
-        <canvas id="donutChart"></canvas>
-        <div class="donut-center-text">
-          <div class="number" id="totalVentasCentral">0</div>
-          <div class="label">VENTAS</div>
-        </div>
-      </div>
-    </div>
+  <div class="total-sales-card">
+    TOTAL DE VENTAS: <span class="total-sales-number" id="totalVentasCentral">0</span>
+  </div>
+
+  <div class="chart-box" id="boxBarChart">
+    <div class="chart-title">VENTAS Y PROMOCIONES POR ASESOR</div>
+    <div style="position:relative;"><canvas id="barChart"></canvas></div>
   </div>
 
   <div class="promo-section">
-    <div style="font-size: 13px; font-weight: bold; color: #94a3b8; margin-bottom: 15px;">
+    <div style="font-size: 12px; font-weight: bold; color: #94a3b8; margin-bottom: 10px;">
       RESUMEN | TOTAL DE PROMOCIONES: <span id="totalPromosHeader" style="color:#ffffff;">0</span>
     </div>
     <div class="promo-grid" id="promoGrid"></div>
@@ -227,7 +195,7 @@
 
   let asesores = [];
   let conteoProductos = {};
-  let barChart, donutChart;
+  let barChart;
 
   function parseCSVLine(str) {
     const arr = [];
@@ -348,7 +316,7 @@
         ].includes(nombreUpper);
 
         if (!esInvalido && !isNaN(ventasCand) && ventasCand > 0) {
-          asesores.push({ nombre: nombreUpper, ventas: ventasCand });
+          asesores.push({ nombre: nombreUpper, ventas: ventasCand, promociones: promosStr || '-' });
 
           if (promosStr) {
             const promosItems = promosStr.split('/');
@@ -377,25 +345,22 @@
     asesores.sort((a, b) => b.ventas - a.ventas);
 
     asesores = asesores.map((item, i) => ({
-      nombre: `${i + 1}. ${item.nombre}`,
-      ventas: item.ventas
+      nombreOriginal: item.nombre,
+      nombreEtiqueta: `${i + 1}. ${item.nombre}`,
+      ventas: item.ventas,
+      promociones: item.promociones
     }));
 
     actualizarTodo();
   }
 
   function actualizarTodo() {
-    const totalVentas = asesores.reduce((a, b) => a + b.ventas, 0);
+    const totalVentas = asesores.reduce((acc, curr) => acc + curr.ventas, 0);
+    document.getElementById('totalVentasCentral').innerText = totalVentas;
+
     let totalPromos = 0;
     Object.values(conteoProductos).forEach(c => totalPromos += c);
-
-    document.getElementById('totalVentasCentral').innerText = totalVentas;
     document.getElementById('totalPromosHeader').innerText = totalPromos;
-
-    // Ajustar altura del contenedor de barras dinámicamente según la cantidad de asesores
-    const boxBar = document.getElementById('boxBarChart');
-    const alturaDinamica = Math.max(400, asesores.length * 28);
-    boxBar.style.height = alturaDinamica + 'px';
 
     const pGrid = document.getElementById('promoGrid');
     pGrid.innerHTML = '';
@@ -410,49 +375,70 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
+    // Altura dinámica generosa para que cada barra tenga espacio para su texto de promociones debajo
+    const alturaDinamica = Math.max(350, asesores.length * 52);
+    document.getElementById('boxBarChart').style.height = (alturaDinamica + 60) + 'px';
+
     if (barChart) barChart.destroy();
     barChart = new Chart(document.getElementById('barChart'), {
       type: 'bar',
       data: {
-        labels: asesores.map(a => a.nombre),
-        datasets: [{ data: asesores.map(a => a.ventas), backgroundColor: bgColores, borderRadius: 4 }]
+        labels: asesores.map(a => a.nombreEtiqueta),
+        datasets: [{ 
+          data: asesores.map(a => a.ventas), 
+          backgroundColor: bgColores, 
+          borderRadius: 4,
+          promociones: asesores.map(a => a.promociones)
+        }]
       },
       options: {
-        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        indexAxis: 'y', 
+        responsive: true, 
+        maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          datalabels: { anchor: 'center', align: 'center', color: '#ffffff', font: { weight: 'bold', size: 10 }, formatter: (v) => v }
+          datalabels: { 
+            anchor: 'center', 
+            align: 'center', 
+            color: '#ffffff', 
+            font: { weight: 'bold', size: 10 }, 
+            formatter: (v) => v 
+          },
+          // Plugin personalizado para mostrar la descripción de promociones debajo de cada barra
+          tooltip: { enabled: false }
         },
         scales: {
           x: { grid: { color: '#1a2f4c' } },
           y: {
             ticks: {
-              color: '#ffffff',
+              color: '#38bdf8',
               font: { size: 10, weight: 'bold' },
-              autoSkip: false // FUERZA A MOSTRAR TODOS LOS NOMBRES SIN OMITIR NINGUNO
-            }
+              autoSkip: false
+            },
+            grid: { display: false }
           }
         }
-      }
-    });
-
-    if (donutChart) donutChart.destroy();
-    donutChart = new Chart(document.getElementById('donutChart'), {
-      type: 'doughnut',
-      data: {
-        labels: asesores.map(a => a.nombre),
-        datasets: [{ data: asesores.map(a => a.ventas), backgroundColor: bgColores, borderWidth: 0 }]
       },
-      options: {
-        cutout: '72%', responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'right', labels: { color: '#fff', font: { size: 9 } } },
-          datalabels: {
-            color: '#ffffff', font: { weight: 'bold', size: 9 },
-            formatter: (v) => totalVentas === 0 ? '0%' : `~${((v / totalVentas) * 100).toFixed(1)}%`
-          }
+      plugins: [{
+        id: 'promoSubLabels',
+        afterDraw(chart) {
+          const { ctx, chartArea, scales } = chart;
+          const yScale = scales.y;
+          const dataset = chart.data.datasets[0];
+          
+          ctx.save();
+          ctx.font = '9px "Segoe UI", Roboto, sans-serif';
+          ctx.fillStyle = '#94a3b8';
+
+          dataset.data.forEach((val, index) => {
+            const yPos = yScale.getPixelForTick(index);
+            const promoText = dataset.promociones[index];
+            // Posicionamos el texto de promociones justo debajo de la etiqueta del eje Y / barra
+            ctx.fillText(`💡 ${promoText}`, chartArea.left, yPos + 13);
+          });
+          ctx.restore();
         }
-      }
+      }]
     });
   }
 
