@@ -83,7 +83,6 @@
       margin-bottom: 10px;
       font-weight: bold;
     }
-    /* Estilos para la tabla sin scroll y fuente de 8px */
     .table-container {
       flex: 1;
       width: 100%;
@@ -173,13 +172,11 @@
   </div>
 
   <div class="grid-charts">
-    <!-- Gráfico de barras de ventas por asesor -->
     <div class="chart-box" id="boxBarChart">
       <div class="chart-title">VENTAS POR ASESOR</div>
       <div style="flex:1; position:relative;"><canvas id="barChart"></canvas></div>
     </div>
     
-    <!-- Tabla de Promociones por Asesor con fuente de 8px -->
     <div class="chart-box" id="boxTableBox">
       <div class="chart-title">VENTAS Y PROMOCIONES POR ASESOR</div>
       <div class="table-container">
@@ -300,7 +297,25 @@
       
       const horaVE = obtenerHoraVenezuelaFormatted();
       status.innerText = "✅ Datos sincronizados correctamente";
-      updateLabel.innerText = `🕒 Última actualización: ${horaVE} (UTC-4 Venezuela)`; } catch (error) { console.error("Error al cargar:", error); status.innerText = "⚠️ No se pudo obtener datos automáticamente."; } }  function procesarCSV(text) { asesores = []; conteoProductos = { 'CARDIOX': 0, 'GLYCONORM': 0, 'PAPAYA': 0, 'CALMANO': 0, 'FLEXACIL': 0, 'ALPHAMAN': 0, 'MIX': 0 };  const lineas = text.split(/\r?\n/);  for (let i = 0; i < Math.min(lineas.length, 6); i++) { const fila = parseCSVLine(lineas[i]); for (let col of fila) { const m = col.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); if (m) { document.getElementById('fechaReporte').value = `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+      updateLabel.innerText = `🕒 Última actualización: ${horaVE} (UTC-4 Venezuela)`;
+    } catch (error) {
+      console.error("Error al cargar:", error);
+      status.innerText = "⚠️ No se pudo obtener datos automáticamente.";
+    }
+  }
+
+  function procesarCSV(text) {
+    asesores = [];
+    conteoProductos = { 'CARDIOX': 0, 'GLYCONORM': 0, 'PAPAYA': 0, 'CALMANO': 0, 'FLEXACIL': 0, 'ALPHAMAN': 0, 'MIX': 0 };
+
+    const lineas = text.split(/\r?\n/);
+    
+    for (let i = 0; i < Math.min(lineas.length, 6); i++) {
+      const fila = parseCSVLine(lineas[i]);
+      for (let col of fila) {
+        const m = col.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (m) {
+          document.getElementById('fechaReporte').value = `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
           break;
         }
       }
@@ -360,12 +375,10 @@
       }
     }
 
-    // Ordenar de mayor a menor ventas
     asesores.sort((a, b) => b.ventas - a.ventas);
 
-    // Numerar la lista en orden descendente
     asesores = asesores.map((item, i) => ({
-      nombre: `${i + 1}.${item.nombre}`,
+      nombre: `${i + 1}. ${item.nombre}`,
       ventas: item.ventas,
       promociones: item.promociones
     }));
@@ -379,10 +392,62 @@
 
     document.getElementById('totalPromosHeader').innerText = totalPromos;
 
-    // Actualizar la tabla con fuente de 8px
     const tablaBody = document.getElementById('tablaPromosBody');
     tablaBody.innerHTML = '';
     asesores.forEach(a => {
       tablaBody.innerHTML += `
         <tr>
-          <td style="
+          <td style="font-weight: bold; color: #38bdf8; font-size: 8px;">${a.nombre}</td>
+          <td style="color: #cbd5e1; font-size: 8px;">${a.promociones}</td>
+        </tr>`;
+    });
+
+    const alturaDinamica = Math.max(400, asesores.length * 28);
+    document.getElementById('boxBarChart').style.height = alturaDinamica + 'px';
+    document.getElementById('boxTableBox').style.height = alturaDinamica + 'px';
+
+    const pGrid = document.getElementById('promoGrid');
+    pGrid.innerHTML = '';
+    productosCatalogo.forEach(prod => {
+      const cant = conteoProductos[prod.nombre] || 0;
+      pGrid.innerHTML += `
+        <div class="promo-item">
+          <div class="promo-badge" style="background-color: ${cant > 0 ? prod.color : '#334155'};">${cant}</div>
+          <div class="promo-name">${prod.nombre}</div>
+        </div>`;
+    });
+
+    const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
+
+    if (barChart) barChart.destroy();
+    barChart = new Chart(document.getElementById('barChart'), {
+      type: 'bar',
+      data: {
+        labels: asesores.map(a => a.nombre),
+        datasets: [{ data: asesores.map(a => a.ventas), backgroundColor: bgColores, borderRadius: 4 }]
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          datalabels: { anchor: 'center', align: 'center', color: '#ffffff', font: { weight: 'bold', size: 8 }, formatter: (v) => v }
+        },
+        scales: {
+          x: { grid: { color: '#1a2f4c' } },
+          y: {
+            ticks: {
+              color: '#ffffff',
+              font: { size: 8, weight: 'bold' },
+              autoSkip: false
+            }
+          }
+        }
+      }
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', cargarDesdeGoogleSheets);
+</script>
+
+</body>
+</html>
