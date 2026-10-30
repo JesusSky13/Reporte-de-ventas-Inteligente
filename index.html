@@ -33,7 +33,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       background: #08101d;
       padding: 12px 15px;
       border-radius: 8px;
@@ -56,6 +56,30 @@
       font-size: 14px;
       font-weight: bold;
       outline: none;
+    }
+    /* Tarjeta de Total de Ventas en el centro */
+    .total-sales-card {
+      background: #08101d;
+      border: 1px solid #1a2f4c;
+      border-radius: 8px;
+      padding: 12px 20px;
+      text-align: center;
+      margin: 0 auto 20px auto;
+      max-width: 320px;
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.1);
+    }
+    .total-sales-title {
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .total-sales-number {
+      font-size: 36px;
+      font-weight: bold;
+      color: #00ff66;
+      line-height: 1;
     }
     .grid-charts {
       display: grid;
@@ -169,6 +193,12 @@
     <div>
       <input type="date" id="fechaReporte">
     </div>
+  </div>
+
+  <!-- Indicador del Total de Ventas centrado -->
+  <div class="total-sales-card">
+    <div class="total-sales-title">TOTAL DE VENTAS GENERAL</div>
+    <div class="total-sales-number" id="totalVentasCentral">0</div>
   </div>
 
   <div class="grid-charts">
@@ -387,9 +417,12 @@
   }
 
   function actualizarTodo() {
+    // Calcular el total general de ventas
+    const totalVentas = asesores.reduce((acc, curr) => acc + curr.ventas, 0);
+    document.getElementById('totalVentasCentral').innerText = totalVentas;
+
     let totalPromos = 0;
     Object.values(conteoProductos).forEach(c => totalPromos += c);
-
     document.getElementById('totalPromosHeader').innerText = totalPromos;
 
     const tablaBody = document.getElementById('tablaPromosBody');
