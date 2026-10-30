@@ -375,9 +375,9 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
-    // Altura proporcional generosa (90px por asesor) para asegurar espacio vertical libre
-    const alturaDinamica = Math.max(380, asesores.length * 90);
-    document.getElementById('boxBarChart').style.height = (alturaDinamica + 50) + 'px';
+    // Altura optimizada para que las barras tengan su espacio perfecto
+    const alturaDinamica = Math.max(350, asesores.length * 65);
+    document.getElementById('boxBarChart').style.height = (alturaDinamica + 30) + 'px';
 
     if (barChart) barChart.destroy();
     barChart = new Chart(document.getElementById('barChart'), {
@@ -389,7 +389,7 @@
           backgroundColor: bgColores, 
           borderRadius: 4,
           barPercentage: 0.5,      
-          categoryPercentage: 0.65,
+          categoryPercentage: 0.6,
           promociones: asesores.map(a => a.promociones)
         }]
       },
@@ -434,8 +434,8 @@
           dataset.data.forEach((val, index) => {
             const yPos = yScale.getPixelForTick(index);
             const promoText = dataset.promociones[index];
-            // Alineación perfecta exactamente debajo de la barra y del nombre del asesor correspondiente
-            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 18);
+            // Subimos el texto colocando un offset menor (+9 píxeles) para que quede pegado y justo debajo de cada barra
+            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 9);
           });
           ctx.restore();
         }
