@@ -20,7 +20,7 @@
     }
     .main-card {
       width: 100%;
-      max-width: 950px;
+      max-width: 900px;
       background-color: #0b1526;
       border: 1px solid #1a2f4c;
       border-radius: 12px;
@@ -344,6 +344,13 @@
 
     asesores.sort((a, b) => b.ventas - a.ventas);
 
+    asesores = asesores.map((item, i) => ({
+      nombreOriginal: item.nombre,
+      nombreEtiqueta: `${i + 1}. ${item.nombre}`,
+      ventas: item.ventas,
+      promociones: item.promociones
+    }));
+
     actualizarTodo();
   }
 
@@ -368,27 +375,22 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
-    // Altura generosa por cada asesor para dar espacio holgado
-    const alturaDinamica = Math.max(400, asesores.length * 80);
+    // Altura proporcional generosa (90px por asesor) para asegurar espacio vertical libre
+    const alturaDinamica = Math.max(380, asesores.length * 90);
     document.getElementById('boxBarChart').style.height = (alturaDinamica + 50) + 'px';
-
-    // Construimos etiquetas multilínea limpias para el eje Y (Nombre + 💊 Promociones)
-    const labelsEjeY = asesores.map((a, i) => [
-      `${i + 1}. ${a.nombre}`,
-      `💊 ${a.promociones}`
-    ]);
 
     if (barChart) barChart.destroy();
     barChart = new Chart(document.getElementById('barChart'), {
       type: 'bar',
       data: {
-        labels: labelsEjeY,
+        labels: asesores.map(a => a.nombreEtiqueta),
         datasets: [{ 
           data: asesores.map(a => a.ventas), 
           backgroundColor: bgColores, 
           borderRadius: 4,
-          barPercentage: 0.55,     
-          categoryPercentage: 0.75
+          barPercentage: 0.5,      
+          categoryPercentage: 0.65,
+          promociones: asesores.map(a => a.promociones)
         }]
       },
       options: {
@@ -411,13 +413,33 @@
           y: {
             ticks: {
               color: '#38bdf8',
-              font: { size: 9.5, weight: 'bold' },
+              font: { size: 10, weight: 'bold' },
               autoSkip: false
             },
             grid: { display: false }
           }
         }
-      }
+      },
+      plugins: [{
+        id: 'promoSubLabels',
+        afterDraw(chart) {
+          const { ctx, chartArea, scales } = chart;
+          const yScale = scales.y;
+          const dataset = chart.data.datasets[0];
+          
+          ctx.save();
+          ctx.font = '9px "Segoe UI", Roboto, sans-serif';
+          ctx.fillStyle = '#94a3b8';
+
+          dataset.data.forEach((val, index) => {
+            const yPos = yScale.getPixelForTick(index);
+            const promoText = dataset.promociones[index];
+            // Alineación perfecta exactamente debajo de la barra y del nombre del asesor correspondiente
+            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 18);
+          });
+          ctx.restore();
+        }
+      }]
     });
   }
 
