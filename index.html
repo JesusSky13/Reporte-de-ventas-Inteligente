@@ -13,7 +13,7 @@
       background-color: #060b13;
       color: #ffffff;
       margin: 0;
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -23,27 +23,27 @@
       max-width: 1050px;
       background-color: #0b1526;
       border: 1px solid #1a2f4c;
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
     }
     .header {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 15px;
+      gap: 8px;
+      margin-bottom: 8px;
       background: #08101d;
-      padding: 12px 15px;
-      border-radius: 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
       border: 1px solid #1a2f4c;
     }
     .header-title {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 16px;
+      gap: 6px;
+      font-size: 15px;
       font-weight: bold;
       color: #38bdf8;
     }
@@ -51,36 +51,37 @@
       background: #0d1e38;
       color: #38bdf8;
       border: 1px solid #38bdf8;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 13px;
       font-weight: bold;
       outline: none;
     }
-    /* Tarjeta centrada: Frase a 12px y Número dinámico a 14px */
+    /* Tarjeta del total centrada con espaciado ajustado */
     .total-sales-card {
       background: #08101d;
       border: 1px solid #1a2f4c;
-      border-radius: 8px;
-      padding: 10px 20px;
+      border-radius: 6px;
+      padding: 6px 14px;
       text-align: center;
-      margin: 0 auto 20px auto;
-      max-width: 300px;
+      margin: 0 auto 8px auto;
+      max-width: 280px;
       font-size: 12px;
       font-weight: bold;
       color: #94a3b8;
-      box-shadow: 0 0 15px rgba(0, 255, 102, 0.1);
+      box-shadow: 0 0 12px rgba(0, 255, 102, 0.1);
     }
     .total-sales-number {
       color: #00ff66;
       font-size: 14px;
       margin-left: 6px;
     }
+    /* Separación uniforme de 8px en la cuadrícula de gráficos */
     .grid-charts {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-bottom: 20px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
     @media (max-width: 850px) {
       .grid-charts { grid-template-columns: 1fr; }
@@ -88,25 +89,25 @@
     .chart-box {
       background: #08101d;
       border: 1px solid #1a2f4c;
-      border-radius: 8px;
-      padding: 15px;
+      border-radius: 6px;
+      padding: 10px;
       position: relative;
-      min-height: 400px;
+      min-height: 380px;
       display: flex;
       flex-direction: column;
     }
     .chart-title {
       text-align: center;
-      font-size: 13px;
+      font-size: 12px;
       color: #94a3b8;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       font-weight: bold;
     }
     .table-container {
       flex: 1;
       width: 100%;
       border: 1px solid #1a2f4c;
-      border-radius: 6px;
+      border-radius: 5px;
     }
     table {
       width: 100%;
@@ -115,7 +116,7 @@
       font-size: 8.5px;
     }
     th, td {
-      padding: 5px 8px;
+      padding: 4px 6px;
       border-bottom: 1px solid #1a2f4c;
     }
     th {
@@ -127,50 +128,51 @@
     tr:hover {
       background-color: rgba(56, 189, 248, 0.05);
     }
+    /* Sección de promociones reducida en un 20% */
     .promo-section {
       background: #08101d;
       border: 1px solid #1a2f4c;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 8px;
     }
     .promo-grid {
       display: flex;
       justify-content: space-around;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 6px;
     }
-    .promo-item { text-align: center; min-width: 65px; }
+    .promo-item { text-align: center; min-width: 50px; }
     .promo-badge {
-      width: 32px; height: 32px; border-radius: 50%;
-      margin: 0 auto 5px auto;
+      width: 25px; height: 25px; border-radius: 50%;
+      margin: 0 auto 3px auto;
       display: flex; align-items: center; justify-content: center;
-      font-weight: bold; font-size: 14px; color: #ffffff;
+      font-weight: bold; font-size: 11px; color: #ffffff;
     }
-    .promo-name { font-size: 11px; color: #64748b; font-weight: bold; }
+    .promo-name { font-size: 9px; color: #64748b; font-weight: bold; }
     .status-bar {
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
       color: #38bdf8;
-      padding: 8px;
+      padding: 4px;
     }
     .last-update {
-      font-size: 11px;
+      font-size: 10px;
       color: #00ff66;
       font-weight: bold;
-      margin-top: 3px;
+      margin-top: 2px;
     }
     .btn-refresh {
       background: #38bdf8;
       color: #060b13;
       border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
+      padding: 8px 12px;
+      border-radius: 5px;
       font-weight: bold;
       cursor: pointer;
       width: 100%;
-      margin-top: 5px;
+      margin-top: 4px;
     }
   </style>
 </head>
@@ -190,7 +192,6 @@
     </div>
   </div>
 
-  <!-- Total de ventas alineado horizontalmente en el centro -->
   <div class="total-sales-card">
     TOTAL DE VENTAS: <span class="total-sales-number" id="totalVentasCentral">0</span>
   </div>
@@ -220,7 +221,7 @@
   </div>
 
   <div class="promo-section">
-    <div style="font-size: 13px; font-weight: bold; color: #94a3b8; margin-bottom: 15px;">
+    <div style="font-size: 11px; font-weight: bold; color: #94a3b8; margin-bottom: 8px;">
       RESUMEN | TOTAL DE PROMOCIONES: <span id="totalPromosHeader" style="color:#ffffff;">0</span>
     </div>
     <div class="promo-grid" id="promoGrid"></div>
@@ -411,7 +412,6 @@
   }
 
   function actualizarTodo() {
-    // Cálculo automatizado de la sumatoria total de ventas
     const totalVentas = asesores.reduce((acc, curr) => acc + curr.ventas, 0);
     document.getElementById('totalVentasCentral').innerText = totalVentas;
 
@@ -429,7 +429,7 @@
         </tr>`;
     });
 
-    const alturaDinamica = Math.max(400, asesores.length * 28);
+    const alturaDinamica = Math.max(380, asesores.length * 26);
     document.getElementById('boxBarChart').style.height = alturaDinamica + 'px';
     document.getElementById('boxTableBox').style.height = alturaDinamica + 'px';
 
