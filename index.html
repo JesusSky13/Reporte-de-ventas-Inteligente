@@ -375,9 +375,9 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
-    // Altura ampliada y proporcional por cada asesor (75px por fila) para dar espacio holgado a las promociones
-    const alturaDinamica = Math.max(380, asesores.length * 75);
-    document.getElementById('boxBarChart').style.height = (alturaDinamica + 40) + 'px';
+    // Altura generosa de 95px por cada asesor para garantizar excelente separación vertical
+    const alturaDinamica = Math.max(400, asesores.length * 95);
+    document.getElementById('boxBarChart').style.height = (alturaDinamica + 50) + 'px';
 
     if (barChart) barChart.destroy();
     barChart = new Chart(document.getElementById('barChart'), {
@@ -388,8 +388,8 @@
           data: asesores.map(a => a.ventas), 
           backgroundColor: bgColores, 
           borderRadius: 4,
-          barPercentage: 0.6,      // Controla el grosor de la barra para dejar espacio libre vertical
-          categoryPercentage: 0.7, // Controla la separación entre filas
+          barPercentage: 0.5,      // Barras más esbeltas
+          categoryPercentage: 0.6, // Mayor espacio entre filas
           promociones: asesores.map(a => a.promociones)
         }]
       },
@@ -434,8 +434,8 @@
           dataset.data.forEach((val, index) => {
             const yPos = yScale.getPixelForTick(index);
             const promoText = dataset.promociones[index];
-            // Dibujamos la cápsula y el texto de las promociones con mayor separación vertical segura
-            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 18);
+            // Desplazamos el texto de las promociones 26 píxeles hacia abajo para que quede perfectamente separado de la barra y del nombre superior
+            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 26);
           });
           ctx.restore();
         }
