@@ -13,37 +13,37 @@
       background-color: #060b13;
       color: #ffffff;
       margin: 0;
-      padding: 8px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
     .main-card {
       width: 100%;
-      max-width: 1050px;
+      max-width: 950px;
       background-color: #0b1526;
       border: 1px solid #1a2f4c;
-      border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
     }
     .header {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
+      gap: 10px;
+      margin-bottom: 20px;
       background: #08101d;
-      padding: 8px 12px;
-      border-radius: 6px;
+      padding: 12px 15px;
+      border-radius: 8px;
       border: 1px solid #1a2f4c;
     }
     .header-title {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 15px;
+      gap: 8px;
+      font-size: 16px;
       font-weight: bold;
       color: #38bdf8;
     }
@@ -51,128 +51,113 @@
       background: #0d1e38;
       color: #38bdf8;
       border: 1px solid #38bdf8;
-      padding: 4px 8px;
-      border-radius: 5px;
-      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 14px;
       font-weight: bold;
       outline: none;
     }
-    /* Tarjeta del total centrada con espaciado ajustado */
-    .total-sales-card {
-      background: #08101d;
-      border: 1px solid #1a2f4c;
-      border-radius: 6px;
-      padding: 6px 14px;
-      text-align: center;
-      margin: 0 auto 8px auto;
-      max-width: 280px;
-      font-size: 12px;
-      font-weight: bold;
-      color: #94a3b8;
-      box-shadow: 0 0 12px rgba(0, 255, 102, 0.1);
-    }
-    .total-sales-number {
-      color: #00ff66;
-      font-size: 14px;
-      margin-left: 6px;
-    }
-    /* Separación uniforme de 8px en la cuadrícula de gráficos */
     .grid-charts {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 8px;
+      gap: 15px;
+      margin-bottom: 20px;
     }
-    @media (max-width: 850px) {
+    @media (max-width: 768px) {
       .grid-charts { grid-template-columns: 1fr; }
     }
     .chart-box {
       background: #08101d;
       border: 1px solid #1a2f4c;
-      border-radius: 6px;
-      padding: 10px;
+      border-radius: 8px;
+      padding: 15px;
       position: relative;
-      min-height: 380px;
+      /* Altura flexible adaptativa según cantidad de asesores */
+      min-height: 400px;
       display: flex;
       flex-direction: column;
     }
     .chart-title {
       text-align: center;
-      font-size: 12px;
+      font-size: 13px;
       color: #94a3b8;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
       font-weight: bold;
     }
-    .table-container {
+    .donut-container {
+      position: relative;
       flex: 1;
       width: 100%;
-      border: 1px solid #1a2f4c;
-      border-radius: 5px;
+      min-height: 350px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 8.5px;
+    .donut-center-text {
+      position: absolute;
+      top: 50%;
+      left: 32%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+      z-index: 10;
     }
-    th, td {
-      padding: 4px 6px;
-      border-bottom: 1px solid #1a2f4c;
-    }
-    th {
-      background-color: #0d1e38;
-      color: #38bdf8;
+    .donut-center-text .number {
+      font-size: 38px;
       font-weight: bold;
-      font-size: 8.5px;
+      color: #00ff66;
+      line-height: 1;
     }
-    tr:hover {
-      background-color: rgba(56, 189, 248, 0.05);
+    .donut-center-text .label {
+      font-size: 11px;
+      color: #94a3b8;
+      letter-spacing: 1px;
+      margin-top: 4px;
     }
-    /* Sección de promociones reducida en un 20% */
     .promo-section {
       background: #08101d;
       border: 1px solid #1a2f4c;
-      border-radius: 6px;
-      padding: 10px;
-      margin-bottom: 8px;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
     }
     .promo-grid {
       display: flex;
       justify-content: space-around;
       align-items: center;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 10px;
     }
-    .promo-item { text-align: center; min-width: 50px; }
+    .promo-item { text-align: center; min-width: 65px; }
     .promo-badge {
-      width: 25px; height: 25px; border-radius: 50%;
-      margin: 0 auto 3px auto;
+      width: 32px; height: 32px; border-radius: 50%;
+      margin: 0 auto 5px auto;
       display: flex; align-items: center; justify-content: center;
-      font-weight: bold; font-size: 11px; color: #ffffff;
+      font-weight: bold; font-size: 14px; color: #ffffff;
     }
-    .promo-name { font-size: 9px; color: #64748b; font-weight: bold; }
+    .promo-name { font-size: 11px; color: #64748b; font-weight: bold; }
     .status-bar {
       text-align: center;
-      font-size: 11px;
+      font-size: 12px;
       color: #38bdf8;
-      padding: 4px;
+      padding: 8px;
     }
     .last-update {
-      font-size: 10px;
+      font-size: 11px;
       color: #00ff66;
       font-weight: bold;
-      margin-top: 2px;
+      margin-top: 3px;
     }
     .btn-refresh {
       background: #38bdf8;
       color: #060b13;
       border: none;
-      padding: 8px 12px;
-      border-radius: 5px;
+      padding: 10px 16px;
+      border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
       width: 100%;
-      margin-top: 4px;
+      margin-top: 5px;
     }
   </style>
 </head>
@@ -192,36 +177,25 @@
     </div>
   </div>
 
-  <div class="total-sales-card">
-    TOTAL DE VENTAS: <span class="total-sales-number" id="totalVentasCentral">0</span>
-  </div>
-
   <div class="grid-charts">
     <div class="chart-box" id="boxBarChart">
       <div class="chart-title">VENTAS POR ASESOR</div>
       <div style="flex:1; position:relative;"><canvas id="barChart"></canvas></div>
     </div>
-    
-    <div class="chart-box" id="boxTableBox">
-      <div class="chart-title">VENTAS Y PROMOCIONES POR ASESOR</div>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>ASESOR</th>
-              <th>PROMOCIONES</th>
-            </tr>
-          </thead>
-          <tbody id="tablaPromosBody">
-            <!-- Se llena dinámicamente -->
-          </tbody>
-        </table>
+    <div class="chart-box">
+      <div class="chart-title">PORCENTAJE DEL TOTAL</div>
+      <div class="donut-container">
+        <canvas id="donutChart"></canvas>
+        <div class="donut-center-text">
+          <div class="number" id="totalVentasCentral">0</div>
+          <div class="label">VENTAS</div>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="promo-section">
-    <div style="font-size: 11px; font-weight: bold; color: #94a3b8; margin-bottom: 8px;">
+    <div style="font-size: 13px; font-weight: bold; color: #94a3b8; margin-bottom: 15px;">
       RESUMEN | TOTAL DE PROMOCIONES: <span id="totalPromosHeader" style="color:#ffffff;">0</span>
     </div>
     <div class="promo-grid" id="promoGrid"></div>
@@ -253,7 +227,7 @@
 
   let asesores = [];
   let conteoProductos = {};
-  let barChart;
+  let barChart, donutChart;
 
   function parseCSVLine(str) {
     const arr = [];
@@ -374,7 +348,7 @@
         ].includes(nombreUpper);
 
         if (!esInvalido && !isNaN(ventasCand) && ventasCand > 0) {
-          asesores.push({ nombre: nombreUpper, ventas: ventasCand, promociones: promosStr || '-' });
+          asesores.push({ nombre: nombreUpper, ventas: ventasCand });
 
           if (promosStr) {
             const promosItems = promosStr.split('/');
@@ -404,34 +378,24 @@
 
     asesores = asesores.map((item, i) => ({
       nombre: `${i + 1}. ${item.nombre}`,
-      ventas: item.ventas,
-      promociones: item.promociones
+      ventas: item.ventas
     }));
 
     actualizarTodo();
   }
 
   function actualizarTodo() {
-    const totalVentas = asesores.reduce((acc, curr) => acc + curr.ventas, 0);
-    document.getElementById('totalVentasCentral').innerText = totalVentas;
-
+    const totalVentas = asesores.reduce((a, b) => a + b.ventas, 0);
     let totalPromos = 0;
     Object.values(conteoProductos).forEach(c => totalPromos += c);
+
+    document.getElementById('totalVentasCentral').innerText = totalVentas;
     document.getElementById('totalPromosHeader').innerText = totalPromos;
 
-    const tablaBody = document.getElementById('tablaPromosBody');
-    tablaBody.innerHTML = '';
-    asesores.forEach(a => {
-      tablaBody.innerHTML += `
-        <tr>
-          <td style="font-weight: bold; color: #38bdf8; font-size: 8.5px;">${a.nombre}</td>
-          <td style="color: #cbd5e1; font-size: 8.5px;">${a.promociones}</td>
-        </tr>`;
-    });
-
-    const alturaDinamica = Math.max(380, asesores.length * 26);
-    document.getElementById('boxBarChart').style.height = alturaDinamica + 'px';
-    document.getElementById('boxTableBox').style.height = alturaDinamica + 'px';
+    // Ajustar altura del contenedor de barras dinámicamente según la cantidad de asesores
+    const boxBar = document.getElementById('boxBarChart');
+    const alturaDinamica = Math.max(400, asesores.length * 28);
+    boxBar.style.height = alturaDinamica + 'px';
 
     const pGrid = document.getElementById('promoGrid');
     pGrid.innerHTML = '';
@@ -457,16 +421,35 @@
         indexAxis: 'y', responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          datalabels: { anchor: 'center', align: 'center', color: '#ffffff', font: { weight: 'bold', size: 8.5 }, formatter: (v) => v }
+          datalabels: { anchor: 'center', align: 'center', color: '#ffffff', font: { weight: 'bold', size: 10 }, formatter: (v) => v }
         },
         scales: {
           x: { grid: { color: '#1a2f4c' } },
           y: {
             ticks: {
               color: '#ffffff',
-              font: { size: 8.5, weight: 'bold' },
-              autoSkip: false
+              font: { size: 10, weight: 'bold' },
+              autoSkip: false // FUERZA A MOSTRAR TODOS LOS NOMBRES SIN OMITIR NINGUNO
             }
+          }
+        }
+      }
+    });
+
+    if (donutChart) donutChart.destroy();
+    donutChart = new Chart(document.getElementById('donutChart'), {
+      type: 'doughnut',
+      data: {
+        labels: asesores.map(a => a.nombre),
+        datasets: [{ data: asesores.map(a => a.ventas), backgroundColor: bgColores, borderWidth: 0 }]
+      },
+      options: {
+        cutout: '72%', responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'right', labels: { color: '#fff', font: { size: 9 } } },
+          datalabels: {
+            color: '#ffffff', font: { weight: 'bold', size: 9 },
+            formatter: (v) => totalVentas === 0 ? '0%' : `~${((v / totalVentas) * 100).toFixed(1)}%`
           }
         }
       }
