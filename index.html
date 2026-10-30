@@ -93,7 +93,7 @@
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 8px;
+      font-size: 8.5px;
     }
     th, td {
       padding: 5px 8px;
@@ -103,7 +103,7 @@
       background-color: #0d1e38;
       color: #38bdf8;
       font-weight: bold;
-      font-size: 8px;
+      font-size: 8.5px;
     }
     tr:hover {
       background-color: rgba(56, 189, 248, 0.05);
@@ -397,8 +397,8 @@
     asesores.forEach(a => {
       tablaBody.innerHTML += `
         <tr>
-          <td style="font-weight: bold; color: #38bdf8; font-size: 8px;">${a.nombre}</td>
-          <td style="color: #cbd5e1; font-size: 8px;">${a.promociones}</td>
+          <td style="font-weight: bold; color: #38bdf8; font-size: 8.5px;">${a.nombre}</td>
+          <td style="color: #cbd5e1; font-size: 8.5px;">${a.promociones}</td>
         </tr>`;
     });
 
@@ -430,14 +430,14 @@
         indexAxis: 'y', responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          datalabels: { anchor: 'center', align: 'center', color: '#ffffff', font: { weight: 'bold', size: 8 }, formatter: (v) => v }
+          datalabels: { anchor: 'center', align: 'center', color: '#ffffff', font: { weight: 'bold', size: 8.5 }, formatter: (v) => v }
         },
         scales: {
           x: { grid: { color: '#1a2f4c' } },
           y: {
             ticks: {
               color: '#ffffff',
-              font: { size: 8, weight: 'bold' },
+              font: { size: 8.5, weight: 'bold' },
               autoSkip: false
             }
           }
