@@ -57,29 +57,24 @@
       font-weight: bold;
       outline: none;
     }
-    /* Tarjeta de Total de Ventas en el centro */
+    /* Tarjeta centrada: Frase a 12px y Número dinámico a 14px */
     .total-sales-card {
       background: #08101d;
       border: 1px solid #1a2f4c;
       border-radius: 8px;
-      padding: 12px 20px;
+      padding: 10px 20px;
       text-align: center;
       margin: 0 auto 20px auto;
-      max-width: 320px;
+      max-width: 300px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #94a3b8;
       box-shadow: 0 0 15px rgba(0, 255, 102, 0.1);
     }
-    .total-sales-title {
-      font-size: 12px;
-      color: #94a3b8;
-      font-weight: bold;
-      letter-spacing: 1px;
-      margin-bottom: 4px;
-    }
     .total-sales-number {
-      font-size: 36px;
-      font-weight: bold;
       color: #00ff66;
-      line-height: 1;
+      font-size: 14px;
+      margin-left: 6px;
     }
     .grid-charts {
       display: grid;
@@ -195,10 +190,9 @@
     </div>
   </div>
 
-  <!-- Indicador del Total de Ventas centrado -->
+  <!-- Total de ventas alineado horizontalmente en el centro -->
   <div class="total-sales-card">
-    <div class="total-sales-title">TOTAL DE VENTAS GENERAL</div>
-    <div class="total-sales-number" id="totalVentasCentral">0</div>
+    TOTAL DE VENTAS: <span class="total-sales-number" id="totalVentasCentral">0</span>
   </div>
 
   <div class="grid-charts">
@@ -417,7 +411,7 @@
   }
 
   function actualizarTodo() {
-    // Calcular el total general de ventas
+    // Cálculo automatizado de la sumatoria total de ventas
     const totalVentas = asesores.reduce((acc, curr) => acc + curr.ventas, 0);
     document.getElementById('totalVentasCentral').innerText = totalVentas;
 
