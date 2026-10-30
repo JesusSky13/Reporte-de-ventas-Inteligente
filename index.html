@@ -373,24 +373,26 @@
         </div>`;
     });
 
-    const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
+    // Invertimos los arreglos para que Chart.js pinte exactamente en orden visual superior a inferior
+    const asesoresInvertidos = [...asesores].reverse();
+    const bgColores = asesoresInvertidos.map((a, i) => coloresNeon[i % coloresNeon.length]);
 
-    // Altura generosa de 95px por cada asesor para garantizar excelente separación vertical
-    const alturaDinamica = Math.max(400, asesores.length * 95);
-    document.getElementById('boxBarChart').style.height = (alturaDinamica + 50) + 'px';
+    // Altura generosa de 110px por cada asesor para garantizar espacio holgado
+    const alturaDinamica = Math.max(400, asesores.length * 110);
+    document.getElementById('boxBarChart').style.height = (alturaDinamica + 60) + 'px';
 
     if (barChart) barChart.destroy();
     barChart = new Chart(document.getElementById('barChart'), {
       type: 'bar',
       data: {
-        labels: asesores.map(a => a.nombreEtiqueta),
+        labels: asesoresInvertidos.map(a => a.nombreEtiqueta),
         datasets: [{ 
-          data: asesores.map(a => a.ventas), 
+          data: asesoresInvertidos.map(a => a.ventas), 
           backgroundColor: bgColores, 
           borderRadius: 4,
-          barPercentage: 0.5,      // Barras más esbeltas
-          categoryPercentage: 0.6, // Mayor espacio entre filas
-          promociones: asesores.map(a => a.promociones)
+          barPercentage: 0.45,     
+          categoryPercentage: 0.55,
+          promociones: asesoresInvertidos.map(a => a.promociones)
         }]
       },
       options: {
@@ -434,8 +436,8 @@
           dataset.data.forEach((val, index) => {
             const yPos = yScale.getPixelForTick(index);
             const promoText = dataset.promociones[index];
-            // Desplazamos el texto de las promociones 26 píxeles hacia abajo para que quede perfectamente separado de la barra y del nombre superior
-            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 26);
+            // Desplazamiento seguro y alineado exactamente debajo de cada barra correspondiente
+            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 32);
           });
           ctx.restore();
         }
