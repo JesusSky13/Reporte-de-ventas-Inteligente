@@ -182,7 +182,7 @@
   <div class="status-bar">
     <div id="statusMsg">🔄 Sincronizando datos...</div>
     <div class="last-update" id="lastUpdate">Última actualización: --:--:--</div>
-    <div><span class="version-tag">Versión Código: v1.2</span></div>
+    <div><span class="version-tag">Versión Código: v1.4</span></div>
   </div>
   <button class="btn-refresh" onclick="cargarDesdeGoogleSheets()">⚡ ACTUALIZAR DATOS AHORA</button>
 </div>
@@ -386,10 +386,13 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
-    // Dinámico inteligente: escala el alto según la cantidad de asesores
-    const pixelesPorAsesor = asesores.length <= 5 ? 100 : 55;
-    const alturaDinamica = Math.max(250, asesores.length * pixelesPorAsesor);
+    // Altura y espaciado dinámico según cantidad de asesores
+    const pixelesPorAsesor = asesores.length <= 5 ? 110 : 70;
+    const alturaDinamica = Math.max(280, asesores.length * pixelesPorAsesor);
     document.getElementById('boxBarChart').style.height = (alturaDinamica + 40) + 'px';
+
+    // Cálculo dinámico del valor máximo en el eje X para que las barras llenen todo el ancho del cuadro
+    const maxVentas = Math.max(...asesores.map(a => a.ventas), 4);
 
     if (barChart) barChart.destroy();
     barChart = new Chart(document.getElementById('barChart'), {
@@ -400,7 +403,7 @@
           data: asesores.map(a => a.ventas), 
           backgroundColor: bgColores, 
           borderRadius: 4,
-          barPercentage: asesores.length <= 5 ? 0.7 : 0.45,      
+          barPercentage: asesores.length <= 5 ? 0.7 : 0.55,      
           categoryPercentage: 0.75,
           promociones: asesores.map(a => a.promociones)
         }]
@@ -421,7 +424,11 @@
           tooltip: { enabled: false }
         },
         scales: {
-          x: { grid: { color: '#1a2f4c' } },
+          x: { 
+            grid: { color: '#1a2f4c' },
+            max: maxVentas, // Fuerza a que la barra principal estire el gráfico ocupando todo el ancho
+            ticks: { precision: 0 }
+          },
           y: {
             ticks: {
               color: '#38bdf8',
@@ -441,13 +448,12 @@
           
           ctx.save();
           ctx.font = 'bold 9.5px "Segoe UI", Roboto, sans-serif';
-          // Letras de las promociones en blanco puro asegurado
           ctx.fillStyle = '#ffffff';
 
           dataset.data.forEach((val, index) => {
             const yPos = yScale.getPixelForTick(index);
             const promoText = dataset.promociones[index];
-            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 10);
+            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 13);
           });
           ctx.restore();
         }
