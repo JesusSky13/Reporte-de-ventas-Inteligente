@@ -82,6 +82,8 @@
       padding: 15px;
       position: relative;
       margin-bottom: 12px;
+      /* Transición suave para cuando cambie de tamaño dinámicamente */
+      transition: height 0.3s ease;
     }
     .chart-title {
       text-align: center;
@@ -375,9 +377,12 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
-    // Altura dinámica inteligente: si hay pocos asesores se expande armónicamente, si hay muchos se ajusta para llenar el cuadro
-    const alturaDinamica = Math.max(280, asesores.length * 65);
-    document.getElementById('boxBarChart').style.height = (alturaDinamica + 30) + 'px';
+    // ESCALA DINÁMICA INTELIGENTE: 
+    // Si hay pocos asesores (ej. 2 o 3), cada barra toma más espacio vertical (85px c/u) para expandirse.
+    // Si hay muchos (ej. 15 a 18), se ajustan automáticamente a 50px c/u para entrar perfectos en el cuadro.
+    const pixelesPorAsesor = asesores.length <= 5 ? 85 : 55;
+    const alturaDinamica = Math.max(220, asesores.length * pixelesPorAsesor);
+    document.getElementById('boxBarChart').style.height = (alturaDinamica + 40) + 'px';
 
     if (barChart) barChart.destroy();
     barChart = new Chart(document.getElementById('barChart'), {
@@ -388,8 +393,9 @@
           data: asesores.map(a => a.ventas), 
           backgroundColor: bgColores, 
           borderRadius: 4,
-          barPercentage: 0.5,      
-          categoryPercentage: 0.6,
+          // Grosor dinámico de la barra según la cantidad de asesores
+          barPercentage: asesores.length <= 5 ? 0.65 : 0.45,      
+          categoryPercentage: 0.75,
           promociones: asesores.map(a => a.promociones)
         }]
       },
@@ -429,7 +435,7 @@
           
           ctx.save();
           ctx.font = '9px "Segoe UI", Roboto, sans-serif';
-          // Letras de las promociones en blanco puro para máxima legibilidad
+          // Letras de las promociones en blanco puro asegurado
           ctx.fillStyle = '#ffffff';
 
           dataset.data.forEach((val, index) => {
