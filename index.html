@@ -182,7 +182,7 @@
   <div class="status-bar">
     <div id="statusMsg">🔄 Sincronizando datos...</div>
     <div class="last-update" id="lastUpdate">Última actualización: --:--:--</div>
-    <div><span class="version-tag">Versión Código: v1.1</span></div>
+    <div><span class="version-tag">Versión Código: v1.2</span></div>
   </div>
   <button class="btn-refresh" onclick="cargarDesdeGoogleSheets()">⚡ ACTUALIZAR DATOS AHORA</button>
 </div>
@@ -326,10 +326,10 @@
           'VENTAS', 'PROMOCIONES', ''
         ].includes(nombreUpper);
 
-        if (!esInvalido && !isNaN(ventasCand) && ventasCand > 0) {
+        if (!esInvalido && !isNaN(ventasCand) && ventasCand >= 0) {
           asesores.push({ nombre: nombreUpper, ventas: ventasCand, promociones: promosStr || '-' });
 
-          if (promosStr) {
+          if (promosStr && promosStr !== '-') {
             const promosItems = promosStr.split('/');
             promosItems.forEach(item => {
               const pMatch = item.trim().match(/^(\d+)\s+(.+)$/);
@@ -339,7 +339,7 @@
 
                 if (pNombre === 'CALAMANO') pNombre = 'CALMANO';
                 if (pNombre === 'GLYCO') pNombre = 'GLYCONORM';
-                if (pName === 'FLEXA') pNombre = 'FLEXACIL';
+                if (pNombre === 'FLEXA') pNombre = 'FLEXACIL';
 
                 if (conteoProductos.hasOwnProperty(pNombre)) {
                   conteoProductos[pNombre] += cant;
@@ -386,10 +386,8 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
-    // ESCALA DINÁMICA POTENCIADA: 
-    // Si hay pocos asesores (<= 5), cada barra toma 110px para expandirse a lo grande.
-    // Si hay muchos (hasta 18), se compactan inteligentemente a 50px para llenar el cuadro.
-    const pixelesPorAsesor = asesores.length <= 5 ? 110 : 50;
+    // Dinámico inteligente: escala el alto según la cantidad de asesores
+    const pixelesPorAsesor = asesores.length <= 5 ? 100 : 55;
     const alturaDinamica = Math.max(250, asesores.length * pixelesPorAsesor);
     document.getElementById('boxBarChart').style.height = (alturaDinamica + 40) + 'px';
 
@@ -402,8 +400,8 @@
           data: asesores.map(a => a.ventas), 
           backgroundColor: bgColores, 
           borderRadius: 4,
-          barPercentage: asesores.length <= 5 ? 0.75 : 0.45,      
-          categoryPercentage: 0.8,
+          barPercentage: asesores.length <= 5 ? 0.7 : 0.45,      
+          categoryPercentage: 0.75,
           promociones: asesores.map(a => a.promociones)
         }]
       },
@@ -443,7 +441,7 @@
           
           ctx.save();
           ctx.font = 'bold 9.5px "Segoe UI", Roboto, sans-serif';
-          // Blanco puro con máxima opacidad garantizada para que resalte
+          // Letras de las promociones en blanco puro asegurado
           ctx.fillStyle = '#ffffff';
 
           dataset.data.forEach((val, index) => {
