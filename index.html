@@ -75,6 +75,8 @@
       font-size: 14px;
       margin-left: 6px;
     }
+    
+    /* FIX PRINCIPAL: Fuerza al contenedor del gráfico a llenar el espacio disponible */
     .chart-box {
       background: #08101d;
       border: 1px solid #1a2f4c;
@@ -82,6 +84,8 @@
       padding: 15px;
       position: relative;
       margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
     }
     .chart-title {
       text-align: center;
@@ -90,6 +94,14 @@
       margin-bottom: 15px;
       font-weight: bold;
     }
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 400px; /* Fuerza el llenado completo del cuadro */
+      flex-grow: 1;
+    }
+
     .promo-section {
       background: #08101d;
       border: 1px solid #1a2f4c;
@@ -168,7 +180,9 @@
 
   <div class="chart-box" id="boxBarChart">
     <div class="chart-title">VENTAS Y PROMOCIONES POR ASESOR</div>
-    <div style="position:relative;"><canvas id="barChart"></canvas></div>
+    <div class="canvas-wrapper">
+      <canvas id="barChart"></canvas>
+    </div>
   </div>
 
   <div class="promo-section">
@@ -181,7 +195,7 @@
   <div class="status-bar">
     <div id="statusMsg">🔄 Sincronizando datos...</div>
     <div class="last-update" id="lastUpdate">Última actualización: --:--:--</div>
-    <div><span class="version-tag">Versión Código: v2.0</span></div>
+    <div><span class="version-tag">Versión Código: v2.1</span></div>
   </div>
   <button class="btn-refresh" onclick="cargarDesdeGoogleSheets()">⚡ ACTUALIZAR DATOS AHORA</button>
 </div>
@@ -385,9 +399,9 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
-    // ALTURA COMPACTA Y NATURAL: Se adapta ajustadamente a los asesores para eliminar el espacio vacío inferior
-    const alturaDinamica = Math.max(220, asesores.length * 52);
-    document.getElementById('boxBarChart').style.height = (alturaDinamica + 30) + 'px';
+    // Ajustamos dinámicamente la altura del contenedor para que la caja no sea gigante innecesariamente, pero que el lienzo OCUPE EL 100%
+    const alturaTotalGrafico = Math.max(380, asesores.length * 50);
+    document.querySelector('.canvas-wrapper').style.height = alturaTotalGrafico + 'px';
 
     const maxVentas = asesores.length > 0 ? Math.max(...asesores.map(a => a.ventas)) : 1;
 
@@ -399,24 +413,23 @@
         datasets: [{ 
           data: asesores.map(a => a.ventas), 
           backgroundColor: bgColores, 
-          borderRadius: 6,
-          // BARRAS EXPANDIDAS AL MÁXIMO VERTICALMENTE (Ocupan todo su carril sin dejar espacios vacíos)
-          barPercentage: 1.0,      
-          categoryPercentage: 1.0,
+          borderRadius: 5,
+          barPercentage: 0.75,      
+          categoryPercentage: 0.85,
           promociones: asesores.map(a => a.promociones)
         }]
       },
       options: {
         indexAxis: 'y', 
         responsive: true, 
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // CLAVE: Permite que el gráfico estire las barras ocupando todo el alto del canvas
         plugins: {
           legend: { display: false },
           datalabels: { 
             anchor: 'center', 
             align: 'center', 
             color: '#ffffff', 
-            font: { weight: 'bold', size: 11 }, 
+            font: { weight: 'bold', size: 10 }, 
             formatter: (v) => v 
           },
           tooltip: { enabled: false }
@@ -447,13 +460,12 @@
           
           ctx.save();
           ctx.font = 'bold 9.5px "Segoe UI", Roboto, sans-serif';
-          ctx.fillStyle = '#ffffff'; // Letras de promociones en blanco puro
+          ctx.fillStyle = '#ffffff';
 
           dataset.data.forEach((val, index) => {
             const yPos = yScale.getPixelForTick(index);
             const promoText = dataset.promociones[index];
-            // Texto de promoción perfectamente centrado en su espacio vertical
-            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 4);
+            ctx.fillText(`💊 ${promoText}`, chartArea.left + 5, yPos + 3);
           });
           ctx.restore();
         }
