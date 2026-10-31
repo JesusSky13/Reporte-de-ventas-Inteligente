@@ -75,8 +75,6 @@
       font-size: 14px;
       margin-left: 6px;
     }
-    
-    /* FIX PRINCIPAL: Fuerza al contenedor del gráfico a llenar el espacio disponible */
     .chart-box {
       background: #08101d;
       border: 1px solid #1a2f4c;
@@ -98,10 +96,9 @@
       position: relative;
       width: 100%;
       height: 100%;
-      min-height: 400px; /* Fuerza el llenado completo del cuadro */
+      min-height: 400px;
       flex-grow: 1;
     }
-
     .promo-section {
       background: #08101d;
       border: 1px solid #1a2f4c;
@@ -195,7 +192,7 @@
   <div class="status-bar">
     <div id="statusMsg">🔄 Sincronizando datos...</div>
     <div class="last-update" id="lastUpdate">Última actualización: --:--:--</div>
-    <div><span class="version-tag">Versión Código: v2.1</span></div>
+    <div><span class="version-tag">Versión Código: v2.2</span></div>
   </div>
   <button class="btn-refresh" onclick="cargarDesdeGoogleSheets()">⚡ ACTUALIZAR DATOS AHORA</button>
 </div>
@@ -399,7 +396,6 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
-    // Ajustamos dinámicamente la altura del contenedor para que la caja no sea gigante innecesariamente, pero que el lienzo OCUPE EL 100%
     const alturaTotalGrafico = Math.max(380, asesores.length * 50);
     document.querySelector('.canvas-wrapper').style.height = alturaTotalGrafico + 'px';
 
@@ -422,13 +418,13 @@
       options: {
         indexAxis: 'y', 
         responsive: true, 
-        maintainAspectRatio: false, // CLAVE: Permite que el gráfico estire las barras ocupando todo el alto del canvas
+        maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
           datalabels: { 
             anchor: 'center', 
             align: 'center', 
-            color: '#ffffff', 
+            color: '#000000', // Valor numérico en negro para resaltar sobre la barra colorida
             font: { weight: 'bold', size: 10 }, 
             formatter: (v) => v 
           },
@@ -460,7 +456,7 @@
           
           ctx.save();
           ctx.font = 'bold 9.5px "Segoe UI", Roboto, sans-serif';
-          ctx.fillStyle = '#ffffff';
+          ctx.fillStyle = '#000000'; // PROMOCIONES EN NEGRO PURO
 
           dataset.data.forEach((val, index) => {
             const yPos = yScale.getPixelForTick(index);
