@@ -182,7 +182,7 @@
   <div class="status-bar">
     <div id="statusMsg">🔄 Sincronizando datos...</div>
     <div class="last-update" id="lastUpdate">Última actualización: --:--:--</div>
-    <div><span class="version-tag">Versión Código: v1.0</span></div>
+    <div><span class="version-tag">Versión Código: v1.1</span></div>
   </div>
   <button class="btn-refresh" onclick="cargarDesdeGoogleSheets()">⚡ ACTUALIZAR DATOS AHORA</button>
 </div>
@@ -339,7 +339,7 @@
 
                 if (pNombre === 'CALAMANO') pNombre = 'CALMANO';
                 if (pNombre === 'GLYCO') pNombre = 'GLYCONORM';
-                if (pNombre === 'FLEXA') pNombre = 'FLEXACIL';
+                if (pName === 'FLEXA') pNombre = 'FLEXACIL';
 
                 if (conteoProductos.hasOwnProperty(pNombre)) {
                   conteoProductos[pNombre] += cant;
@@ -386,8 +386,11 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
-    const pixelesPorAsesor = asesores.length <= 5 ? 85 : 55;
-    const alturaDinamica = Math.max(220, asesores.length * pixelesPorAsesor);
+    // ESCALA DINÁMICA POTENCIADA: 
+    // Si hay pocos asesores (<= 5), cada barra toma 110px para expandirse a lo grande.
+    // Si hay muchos (hasta 18), se compactan inteligentemente a 50px para llenar el cuadro.
+    const pixelesPorAsesor = asesores.length <= 5 ? 110 : 50;
+    const alturaDinamica = Math.max(250, asesores.length * pixelesPorAsesor);
     document.getElementById('boxBarChart').style.height = (alturaDinamica + 40) + 'px';
 
     if (barChart) barChart.destroy();
@@ -399,8 +402,8 @@
           data: asesores.map(a => a.ventas), 
           backgroundColor: bgColores, 
           borderRadius: 4,
-          barPercentage: asesores.length <= 5 ? 0.65 : 0.45,      
-          categoryPercentage: 0.75,
+          barPercentage: asesores.length <= 5 ? 0.75 : 0.45,      
+          categoryPercentage: 0.8,
           promociones: asesores.map(a => a.promociones)
         }]
       },
@@ -439,13 +442,14 @@
           const dataset = chart.data.datasets[0];
           
           ctx.save();
-          ctx.font = '9px "Segoe UI", Roboto, sans-serif';
+          ctx.font = 'bold 9.5px "Segoe UI", Roboto, sans-serif';
+          // Blanco puro con máxima opacidad garantizada para que resalte
           ctx.fillStyle = '#ffffff';
 
           dataset.data.forEach((val, index) => {
             const yPos = yScale.getPixelForTick(index);
             const promoText = dataset.promociones[index];
-            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 9);
+            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 10);
           });
           ctx.restore();
         }
