@@ -182,7 +182,7 @@
   <div class="status-bar">
     <div id="statusMsg">🔄 Sincronizando datos...</div>
     <div class="last-update" id="lastUpdate">Última actualización: --:--:--</div>
-    <div><span class="version-tag">Versión Código: v1.6</span></div>
+    <div><span class="version-tag">Versión Código: v1.8</span></div>
   </div>
   <button class="btn-refresh" onclick="cargarDesdeGoogleSheets()">⚡ ACTUALIZAR DATOS AHORA</button>
 </div>
@@ -386,10 +386,12 @@
 
     const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
 
-    // 1. ESCALA DINÁMICA EN EL EJE Y (ALTO): Se adapta dinámicamente al número de asesores
-    const pixelesPorAsesor = asesores.length <= 5 ? 110 : 75;
-    const alturaDinamica = Math.max(280, asesores.length * pixelesPorAsesor);
-    document.getElementById('boxBarChart').style.height = (alturaDinamica + 40) + 'px';
+    // ALTURA VERTICAL AMPLIADA: Mayor espacio por asesor para que las barras ganen grosor y presencia
+    const pixelesPorAsesor = asesores.length <= 5 ? 130 : 90;
+    const alturaDinamica = Math.max(320, asesores.length * pixelesPorAsesor);
+    document.getElementById('boxBarChart').style.height = (alturaDinamica + 50) + 'px';
+
+    const maxVentas = asesores.length > 0 ? Math.max(...asesores.map(a => a.ventas)) : 1;
 
     if (barChart) barChart.destroy();
     barChart = new Chart(document.getElementById('barChart'), {
@@ -399,10 +401,10 @@
         datasets: [{ 
           data: asesores.map(a => a.ventas), 
           backgroundColor: bgColores, 
-          borderRadius: 4,
-          // Grosor dinámico de las barras según la cantidad de asesores
-          barPercentage: asesores.length <= 5 ? 0.8 : 0.6,      
-          categoryPercentage: 0.85,
+          borderRadius: 6,
+          // BARRAS VERTICALES ROBUSTAS (Ya no son delgadas)
+          barPercentage: 0.85,      
+          categoryPercentage: 0.90,
           promociones: asesores.map(a => a.promociones)
         }]
       },
@@ -416,22 +418,22 @@
             anchor: 'center', 
             align: 'center', 
             color: '#ffffff', 
-            font: { weight: 'bold', size: 10 }, 
+            font: { weight: 'bold', size: 11 }, 
             formatter: (v) => v 
           },
           tooltip: { enabled: false }
         },
         scales: {
-          // 2. ESCALA DINÁMICA EN EL EJE X (ANCHO): Llenado fluido de lado a lado sin espacios muertos
           x: { 
             grid: { color: '#1a2f4c' },
             ticks: { precision: 0, color: '#94a3b8' },
-            grace: '5%' // Da un pequeño respiro natural al final de la barra más larga
+            min: 0,
+            max: maxVentas === 0 ? 1 : maxVentas
           },
           y: {
             ticks: {
               color: '#38bdf8',
-              font: { size: 10, weight: 'bold' },
+              font: { size: 11, weight: 'bold' },
               autoSkip: false
             },
             grid: { display: false }
@@ -446,13 +448,14 @@
           const dataset = chart.data.datasets[0];
           
           ctx.save();
-          ctx.font = 'bold 9.5px "Segoe UI", Roboto, sans-serif';
-          ctx.fillStyle = '#ffffff'; // Letras de las promociones en blanco puro
+          ctx.font = 'bold 10px "Segoe UI", Roboto, sans-serif';
+          ctx.fillStyle = '#ffffff'; // Letras de promociones en blanco puro
 
           dataset.data.forEach((val, index) => {
             const yPos = yScale.getPixelForTick(index);
             const promoText = dataset.promociones[index];
-            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 13);
+            // Posicionamiento holgado debajo de cada barra robusta
+            ctx.fillText(`💊 ${promoText}`, chartArea.left, yPos + 15);
           });
           ctx.restore();
         }
