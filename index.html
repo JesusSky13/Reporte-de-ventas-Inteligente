@@ -17,7 +17,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 24px;
+    }
+    .grupos-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 26px;
     }
     .main-card {
       width: 100%;
@@ -109,8 +115,7 @@
     .canvas-wrapper {
       position: relative;
       width: 100%;
-      min-height: 220px;
-      flex-grow: 1;
+      height: 240px;
     }
     .promo-section {
       background: #08101d;
@@ -180,10 +185,107 @@
 </head>
 <body>
 
-<div id="gruposContainer" style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 26px;"></div>
+<div class="grupos-wrapper">
+  <!-- GRUPO 1 -->
+  <div class="main-card" id="cardGrupo_1">
+    <div class="group-banner" id="tituloGrupo_1">GRUPO 1</div>
+    <div class="header">
+      <div class="header-title">
+        <span>REPORTE DE VENTAS DE LA</span>
+        <span class="locked-badge" id="turnoBadge_1">--</span>
+      </div>
+      <div><span class="locked-badge" id="fechaBadge_1">--/--/----</span></div>
+    </div>
+    <div class="total-sales-card">
+      TOTAL DE VENTAS: <span class="total-sales-number" id="totalVentas_1">0</span>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">VENTAS Y PROMOCIONES POR ASESOR</div>
+      <div class="canvas-wrapper" id="wrapperChart_1"><canvas id="barChart_1"></canvas></div>
+    </div>
+    <div class="promo-section">
+      <div style="font-size: 12px; font-weight: bold; color: #94a3b8; margin-bottom: 10px;">
+        RESUMEN | TOTAL DE PROMOCIONES: <span id="totalPromos_1" style="color:#ffffff;">0</span>
+      </div>
+      <div class="promo-grid" id="promoGrid_1"></div>
+    </div>
+    <div class="status-bar">
+      <div id="statusMsg_1">Panel en espera. Presiona actualizar.</div>
+      <div class="last-update" id="lastUpdate_1">Ultima actualizacion: --:--:--</div>
+      <div><span class="version-tag">Version Codigo: v3.1</span></div>
+    </div>
+    <button class="btn-refresh" id="btnRefresh_1" onclick="actualizarGrupo(1)">ACTUALIZAR GRUPO 1</button>
+  </div>
+
+  <!-- GRUPO 2 -->
+  <div class="main-card" id="cardGrupo_2">
+    <div class="group-banner" id="tituloGrupo_2">GRUPO ISMAEL</div>
+    <div class="header">
+      <div class="header-title">
+        <span>REPORTE DE VENTAS DE LA</span>
+        <span class="locked-badge" id="turnoBadge_2">--</span>
+      </div>
+      <div><span class="locked-badge" id="fechaBadge_2">--/--/----</span></div>
+    </div>
+    <div class="total-sales-card">
+      TOTAL DE VENTAS: <span class="total-sales-number" id="totalVentas_2">0</span>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">VENTAS Y PROMOCIONES POR ASESOR</div>
+      <div class="canvas-wrapper" id="wrapperChart_2"><canvas id="barChart_2"></canvas></div>
+    </div>
+    <div class="promo-section">
+      <div style="font-size: 12px; font-weight: bold; color: #94a3b8; margin-bottom: 10px;">
+        RESUMEN | TOTAL DE PROMOCIONES: <span id="totalPromos_2" style="color:#ffffff;">0</span>
+      </div>
+      <div class="promo-grid" id="promoGrid_2"></div>
+    </div>
+    <div class="status-bar">
+      <div id="statusMsg_2">Panel en espera. Presiona actualizar.</div>
+      <div class="last-update" id="lastUpdate_2">Ultima actualizacion: --:--:--</div>
+      <div><span class="version-tag">Version Codigo: v3.1</span></div>
+    </div>
+    <button class="btn-refresh" id="btnRefresh_2" onclick="actualizarGrupo(2)">ACTUALIZAR GRUPO ISMAEL</button>
+  </div>
+
+  <!-- GRUPO 3 -->
+  <div class="main-card" id="cardGrupo_3">
+    <div class="group-banner" id="tituloGrupo_3">GRUPO PRUEBA</div>
+    <div class="header">
+      <div class="header-title">
+        <span>REPORTE DE VENTAS DE LA</span>
+        <span class="locked-badge" id="turnoBadge_3">--</span>
+      </div>
+      <div><span class="locked-badge" id="fechaBadge_3">--/--/----</span></div>
+    </div>
+    <div class="total-sales-card">
+      TOTAL DE VENTAS: <span class="total-sales-number" id="totalVentas_3">0</span>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">VENTAS Y PROMOCIONES POR ASESOR</div>
+      <div class="canvas-wrapper" id="wrapperChart_3"><canvas id="barChart_3"></canvas></div>
+    </div>
+    <div class="promo-section">
+      <div style="font-size: 12px; font-weight: bold; color: #94a3b8; margin-bottom: 10px;">
+        RESUMEN | TOTAL DE PROMOCIONES: <span id="totalPromos_3" style="color:#ffffff;">0</span>
+      </div>
+      <div class="promo-grid" id="promoGrid_3"></div>
+    </div>
+    <div class="status-bar">
+      <div id="statusMsg_3">Panel en espera. Presiona actualizar.</div>
+      <div class="last-update" id="lastUpdate_3">Ultima actualizacion: --:--:--</div>
+      <div><span class="version-tag">Version Codigo: v3.1</span></div>
+    </div>
+    <button class="btn-refresh" id="btnRefresh_3" onclick="actualizarGrupo(3)">ACTUALIZAR GRUPO PRUEBA</button>
+  </div>
+</div>
 
 <script>
-  Chart.register(ChartDataLabels);
+  try {
+    if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
+      Chart.register(ChartDataLabels);
+    }
+  } catch (e) {}
 
   const URL_GOOGLE_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Ec97OqqEHNXkNDuRIuJoLerBn0-bI_hHqt-K0v1Wnrt58iwrRNMTblMLqnwp-LFYYsP5WjmOmmXv/pub?gid=1739702520&single=true&output=csv";
 
@@ -202,96 +304,14 @@
     { nombre: 'MIX', color: '#ec4899' }
   ];
 
-  // Configuración exacta de columnas (0-based) y filas (1-based) según la hoja WEB
   const GRUPOS_CONFIG = [
-    {
-      id: 1,
-      tituloDefault: "GRUPO 1",
-      colFecha: 2,   // C
-      colAsesor: 3,  // D
-      colVentas: 4,  // E
-      colPromos: 5,  // F
-      filaTitulo: 2,
-      filaInicio: 4,
-      filaFin: 31
-    },
-    {
-      id: 2,
-      tituloDefault: "GRUPO ISMAEL",
-      colFecha: 7,   // H
-      colAsesor: 8,  // I
-      colVentas: 9,  // J
-      colPromos: 10, // K
-      filaTitulo: 2,
-      filaInicio: 4,
-      filaFin: 31
-    },
-    {
-      id: 3,
-      tituloDefault: "GRUPO PRUEBA",
-      colFecha: 12,  // M
-      colAsesor: 13, // N
-      colVentas: 14, // O
-      colPromos: 15, // P
-      filaTitulo: 2,
-      filaInicio: 4,
-      filaFin: 16
-    }
+    { id: 1, colFecha: 2, colAsesor: 3, colVentas: 4, colPromos: 5, filaTitulo: 2, filaInicio: 4, filaFin: 31 },
+    { id: 2, colFecha: 7, colAsesor: 8, colVentas: 9, colPromos: 10, filaTitulo: 2, filaInicio: 4, filaFin: 31 },
+    { id: 3, colFecha: 12, colAsesor: 13, colVentas: 14, colPromos: 15, filaTitulo: 2, filaInicio: 4, filaFin: 16 }
   ];
 
   const chartsInstancias = {};
   const ultimoClickPorGrupo = { 1: 0, 2: 0, 3: 0 };
-
-  function construirTarjetasHTML() {
-    const contenedor = document.getElementById('gruposContainer');
-    contenedor.innerHTML = '';
-
-    GRUPOS_CONFIG.forEach(g => {
-      contenedor.innerHTML += `
-        <div class="main-card" id="cardGrupo_${g.id}">
-          <div class="group-banner" id="tituloGrupo_${g.id}">${g.tituloDefault}</div>
-
-          <div class="header">
-            <div class="header-title">
-              <span>REPORTE DE VENTAS DE LA</span>
-              <span class="locked-badge" id="turnoBadge_${g.id}">--</span>
-            </div>
-            <div>
-              <span class="locked-badge" id="fechaBadge_${g.id}">--/--/----</span>
-            </div>
-          </div>
-
-          <div class="total-sales-card">
-            TOTAL DE VENTAS: <span class="total-sales-number" id="totalVentas_${g.id}">0</span>
-          </div>
-
-          <div class="chart-box">
-            <div class="chart-title">VENTAS Y PROMOCIONES POR ASESOR</div>
-            <div class="canvas-wrapper" id="wrapperChart_${g.id}">
-              <canvas id="barChart_${g.id}"></canvas>
-            </div>
-          </div>
-
-          <div class="promo-section">
-            <div style="font-size: 12px; font-weight: bold; color: #94a3b8; margin-bottom: 10px;">
-              RESUMEN | TOTAL DE PROMOCIONES: <span id="totalPromos_${g.id}" style="color:#ffffff;">0</span>
-            </div>
-            <div class="promo-grid" id="promoGrid_${g.id}"></div>
-          </div>
-
-          <div class="status-bar">
-            <div id="statusMsg_${g.id}">⏸️ Panel en espera. Presiona actualizar.</div>
-            <div class="last-update" id="lastUpdate_${g.id}">Última actualización: --:--:--</div>
-            <div><span class="version-tag">Versión Código: v3.0</span></div>
-          </div>
-
-          <button class="btn-refresh" id="btnRefresh_${g.id}" onclick="actualizarGrupo(${g.id})">
-            ⚡ ACTUALIZAR ${g.tituloDefault}
-          </button>
-        </div>
-      `;
-    });
-  }
 
   function parseCSVLine(str) {
     const arr = [];
@@ -316,20 +336,14 @@
 
   function calcularTurnoYFechaVE() {
     const ahora = new Date();
-    const opcionesHora = { timeZone: 'America/Caracas', hour: 'numeric', hour12: false };
-    const horaVE = parseInt(ahora.toLocaleTimeString('es-VE', opcionesHora), 10);
-
+    const horaVE = parseInt(ahora.toLocaleTimeString('es-VE', { timeZone: 'America/Caracas', hour: 'numeric', hour12: false }), 10);
     const turno = (horaVE >= 6 && horaVE < 18) ? 'MAÑANA' : 'NOCHE';
-
-    const opcionesFecha = { timeZone: 'America/Caracas', year: 'numeric', month: '2-digit', day: '2-digit' };
-    const fechaStr = ahora.toLocaleDateString('es-VE', opcionesFecha);
-
+    const fechaStr = ahora.toLocaleDateString('es-VE', { timeZone: 'America/Caracas', year: 'numeric', month: '2-digit', day: '2-digit' });
     return { turno, fechaStr };
   }
 
   function obtenerHoraVenezuelaFormatted() {
-    const ahora = new Date();
-    return ahora.toLocaleTimeString('es-VE', {
+    return new Date().toLocaleTimeString('es-VE', {
       timeZone: 'America/Caracas',
       hour12: true,
       hour: '2-digit',
@@ -340,23 +354,257 @@
 
   function aplicarFechaYTurnoBloqueados(grupoId, fechaHoja = null) {
     const { turno, fechaStr } = calcularTurnoYFechaVE();
-    document.getElementById(`turnoBadge_${grupoId}`).innerText = turno; document.getElementById(`fechaBadge_${grupoId}`).innerText = fechaHoja || fechaStr;
+    const tEl = document.getElementById(`turnoBadge_${grupoId}`);
+    const fEl = document.getElementById(`fechaBadge_${grupoId}`);
+    if (tEl) tEl.innerText = turno;
+    if (fEl) fEl.innerText = fechaHoja || fechaStr;
+  }
+
+  function pintarGrillaPromosVacia(grupoId, conteo = {}) {
+    const pGrid = document.getElementById(`promoGrid_${grupoId}`);
+    if (!pGrid) return;
+    pGrid.innerHTML = '';
+    let total = 0;
+    productosCatalogo.forEach(prod => {
+      const cant = conteo[prod.nombre] || 0;
+      total += cant;
+      pGrid.innerHTML += `
+        <div class="promo-item">
+          <div class="promo-badge" style="background-color: ${cant > 0 ? prod.color : '#334155'};">${cant}</div>
+          <div class="promo-name">${prod.nombre}</div>
+        </div>
+      `;
+    });
+    const totEl = document.getElementById(`totalPromos_${grupoId}`);
+    if (totEl) totEl.innerText = total;
   }
 
   async function actualizarGrupo(grupoId) {
     const ahora = Date.now();
-    const cooldownMs = 15000; // 15 segundos de protección por botón
+    const cooldownMs = 15000;
     if (ahora - ultimoClickPorGrupo[grupoId] < cooldownMs) {
       const rest = Math.ceil((cooldownMs - (ahora - ultimoClickPorGrupo[grupoId])) / 1000);
-      document.getElementById(`statusMsg_${grupoId}`).innerText = `⏳ Espera ${rest}s para volver a consultar este grupo.`;
+      document.getElementById(`statusMsg_${grupoId}`).innerText = `Espera ${rest}s para volver a consultar este grupo.`;
       return;
     }
 
     ultimoClickPorGrupo[grupoId] = ahora;
-    const status = document.getElementById(`statusMsg_${grupoId}`); const updateLabel = document.getElementById(`lastUpdate_${grupoId}`);
-    const btn = document.getElementById(`btnRefresh_${grupoId}`);  status.innerText = "🔄 Sincronizando datos con Google Sheets..."; btn.disabled = true;  try { const response = await fetch(URL_GOOGLE_SHEETS + "&cachebust=" + ahora); if (!response.ok) throw new Error("HTTP error " + response.status); const csvText = await response.text();  if (csvText.includes("<!DOCTYPE html>") \vert{}\vert{} csvText.length < 15) { throw new Error("Respuesta inválida de Google Sheets"); }  localStorage.setItem(`cached_csv_grupo_${grupoId}`, csvText);
+    const status = document.getElementById(`statusMsg_${grupoId}`);
+    const updateLabel = document.getElementById(`lastUpdate_${grupoId}`);
+    const btn = document.getElementById(`btnRefresh_${grupoId}`);
+
+    status.innerText = "Sincronizando datos con Google Sheets...";
+    btn.disabled = true;
+
+    try {
+      const response = await fetch(URL_GOOGLE_SHEETS + "&cachebust=" + ahora);
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      const csvText = await response.text();
+
+      if (!csvText || csvText.trim().startsWith("<!DOCTYPE") || csvText.trim().startsWith("<html")) {
+        throw new Error("Google devolvio HTML en lugar de CSV");
+      }
+
+      localStorage.setItem(`cached_csv_grupo_${grupoId}`, csvText);
       procesarGrupoDesdeCSV(grupoId, csvText);
 
-      const horaVE = obtenerHoraVenezuelaFormatted();
-      status.innerText = "✅ Datos sincronizados correctamente";
-      updateLabel.innerText = `🕒 Últ
+      status.innerText = "Datos sincronizados correctamente";
+      updateLabel.innerText = `Ultima actualizacion: ${obtenerHoraVenezuelaFormatted()} (UTC-4 Venezuela)`;
+    } catch (err) {
+      const respaldo = localStorage.getItem(`cached_csv_grupo_${grupoId}`);
+      if (respaldo) {
+        procesarGrupoDesdeCSV(grupoId, respaldo);
+        status.innerText = "Sin conexion directa. Mostrando ultimo respaldo en cache.";
+      } else {
+        status.innerText = "No se pudo leer el CSV de Google Sheets. Verifica 'Publicar en la web' como CSV.";
+      }
+    } finally {
+      setTimeout(() => { btn.disabled = false; }, 3000);
+    }
+  }
+
+  function normalizarProducto(nombreRaw) {
+    const p = nombreRaw.trim().toUpperCase();
+    if (p === 'CALAMANO') return 'CALMANO';
+    if (p === 'GLYCO') return 'GLYCONORM';
+    if (p === 'FLEXA') return 'FLEXACIL';
+    if (p === 'DRENAJE' || p === 'DRENAJE LINFÁTICO') return 'DRENAJE LINFATICO';
+    if (p === 'VITAMINAS') return 'VITAMINA';
+    return p;
+  }
+
+  function extraerFechaCorta(texto) {
+    const partes = texto.split('/');
+    if (partes.length === 3) {
+      const d = partes[0].replace(/\D/g, '');
+      const m = partes[1].replace(/\D/g, '');
+      const a = partes[2].replace(/\D/g, '').slice(0, 4);
+      if (d && m && a.length === 4) {
+        return `${d.padStart(2, '0')}/${m.padStart(2, '0')}/${a}`;
+      }
+    }
+    return null;
+  }
+
+  function procesarGrupoDesdeCSV(grupoId, csvText) {
+    const config = GRUPOS_CONFIG.find(g => g.id === grupoId);
+    if (!config) return;
+
+    const lineas = csvText.split(/\r?\n/);
+    const matriz = lineas.map(l => parseCSVLine(l));
+
+    const filaTituloArr = matriz[config.filaTitulo - 1] || [];
+    const posibleTitulo = (filaTituloArr[config.colFecha] || filaTituloArr[config.colAsesor] || '').trim();
+    if (posibleTitulo && !['FECHA', 'ASESOR'].includes(posibleTitulo.toUpperCase())) {
+      document.getElementById(`tituloGrupo_${grupoId}`).innerText = posibleTitulo.toUpperCase();
+      document.getElementById(`btnRefresh_${grupoId}`).innerText = `ACTUALIZAR ${posibleTitulo.toUpperCase()}`;
+    }
+
+    let fechaEncontrada = null;
+    for (let r = config.filaInicio - 1; r <= Math.min(config.filaFin - 1, matriz.length - 1); r++) {
+      const celdaFecha = (matriz[r]?.[config.colFecha] || '').trim();
+      const f = extraerFechaCorta(celdaFecha);
+      if (f) {
+        fechaEncontrada = f;
+        break;
+      }
+    }
+    aplicarFechaYTurnoBloqueados(grupoId, fechaEncontrada);
+
+    let asesores = [];
+    const conteoProductos = {};
+    productosCatalogo.forEach(p => conteoProductos[p.nombre] = 0);
+
+    for (let r = config.filaInicio - 1; r <= Math.min(config.filaFin - 1, matriz.length - 1); r++) {
+      const fila = matriz[r] || [];
+      const nombreCand = (fila[config.colAsesor] || '').trim();
+      const ventasRaw = (fila[config.colVentas] || '').trim();
+      const promosStr = (fila[config.colPromos] || '').trim();
+      const nombreUpper = nombreCand.toUpperCase();
+
+      if (!nombreCand || ['ASESOR', 'NRO VENTAS', 'TOTAL DE VENTAS', 'TOTAL', 'FECHA', 'PROMOCIONES'].includes(nombreUpper)) {
+        continue;
+      }
+
+      const ventasNum = parseInt(ventasRaw, 10);
+      if (!isNaN(ventasNum) && ventasNum >= 0) {
+        asesores.push({
+          nombre: nombreUpper,
+          ventas: ventasNum,
+          promociones: promosStr || '-'
+        });
+
+        if (promosStr && promosStr !== '-') {
+          promosStr.split('/').forEach(item => {
+            const parts = item.trim().split(/\s+/);
+            if (parts.length >= 2) {
+              const cant = parseInt(parts[0], 10);
+              const pNombre = normalizarProducto(parts.slice(1).join(' '));
+              if (!isNaN(cant) && cant > 0) {
+                conteoProductos[pNombre] = (conteoProductos[pNombre] || 0) + cant;
+              }
+            }
+          });
+        }
+      }
+    }
+
+    asesores.sort((a, b) => b.ventas - a.ventas);
+    asesores = asesores.map((item, i) => ({
+      nombreEtiqueta: `${i + 1}. ${item.nombre}`,
+      ventas: item.ventas,
+      promociones: item.promociones
+    }));
+
+    renderizarGrupo(grupoId, asesores, conteoProductos);
+  }
+
+  function renderizarGrupo(grupoId, asesores, conteoProductos) {
+    const totalVentas = asesores.reduce((acc, curr) => acc + curr.ventas, 0);
+    document.getElementById(`totalVentas_${grupoId}`).innerText = totalVentas;
+    pintarGrillaPromosVacia(grupoId, conteoProductos);
+
+    const alturaGrafico = Math.max(220, asesores.length * 48);
+    document.getElementById(`wrapperChart_${grupoId}`).style.height = alturaGrafico + 'px';
+
+    if (typeof Chart === 'undefined') return;
+
+    const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
+    const maxVentas = asesores.length > 0 ? Math.max(...asesores.map(a => a.ventas)) : 1;
+
+    if (chartsInstancias[grupoId]) {
+      chartsInstancias[grupoId].destroy();
+    }
+
+    const ctxCanvas = document.getElementById(`barChart_${grupoId}`);
+    chartsInstancias[grupoId] = new Chart(ctxCanvas, {
+      type: 'bar',
+      data: {
+        labels: asesores.map(a => a.nombreEtiqueta),
+        datasets: [{
+          data: asesores.map(a => a.ventas),
+          backgroundColor: bgColores,
+          borderRadius: 5,
+          barPercentage: 0.75,
+          categoryPercentage: 0.85,
+          promociones: asesores.map(a => a.promociones)
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          datalabels: {
+            anchor: 'center',
+            align: 'center',
+            color: '#000000',
+            font: { weight: 'bold', size: 10 },
+            formatter: (v) => v
+          },
+          tooltip: { enabled: false }
+        },
+        scales: {
+          x: {
+            grid: { color: '#1a2f4c' },
+            ticks: { precision: 0, color: '#94a3b8', font: { size: 11 } },
+            min: 0,
+            max: maxVentas === 0 ? 1 : maxVentas
+          },
+          y: {
+            ticks: { color: '#38bdf8', font: { size: 11, weight: 'bold' }, autoSkip: false },
+            grid: { display: false }
+          }
+        }
+      },
+      plugins: [{
+        id: `promoSubLabels_${grupoId}`,
+        afterDraw(chart) {
+          const { ctx, chartArea, scales } = chart;
+          const yScale = scales.y;
+          const dataset = chart.data.datasets[0];
+          ctx.save();
+          ctx.font = 'bold 9.5px "Segoe UI", Roboto, sans-serif';
+          ctx.fillStyle = '#000000';
+          dataset.data.forEach((val, index) => {
+            const yPos = yScale.getPixelForTick(index);
+            const promoText = dataset.promociones[index];
+            ctx.fillText(`💊 ${promoText}`, chartArea.left + 5, yPos + 3);
+          });
+          ctx.restore();
+        }
+      }]
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    [1, 2, 3].forEach(id => {
+      aplicarFechaYTurnoBloqueados(id);
+      pintarGrillaPromosVacia(id);
+    });
+  });
+</script>
+
+</body>
+</html>
