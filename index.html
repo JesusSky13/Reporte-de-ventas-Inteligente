@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reporte de Ventas Automatizado</title>
+  <title>Reporte de Ventas Automatizado - 3 Grupos</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <style>
@@ -13,10 +13,11 @@
       background-color: #060b13;
       color: #ffffff;
       margin: 0;
-      padding: 10px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 24px;
     }
     .main-card {
       width: 100%;
@@ -26,6 +27,19 @@
       border-radius: 12px;
       padding: 15px;
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+    }
+    .group-banner {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #00ff66;
+      background: #08101d;
+      border: 1px solid #1a2f4c;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
     }
     .header {
       display: flex;
@@ -43,19 +57,19 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: bold;
       color: #38bdf8;
     }
-    select, input[type="date"] {
+    .locked-badge {
       background: #0d1e38;
       color: #38bdf8;
       border: 1px solid #38bdf8;
-      padding: 6px 10px;
+      padding: 5px 12px;
       border-radius: 6px;
       font-size: 13px;
       font-weight: bold;
-      outline: none;
+      user-select: none;
     }
     .total-sales-card {
       background: #08101d;
@@ -95,8 +109,7 @@
     .canvas-wrapper {
       position: relative;
       width: 100%;
-      height: 100%;
-      min-height: 400px;
+      min-height: 220px;
       flex-grow: 1;
     }
     .promo-section {
@@ -113,14 +126,14 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .promo-item { text-align: center; min-width: 60px; }
+    .promo-item { text-align: center; min-width: 65px; }
     .promo-badge {
       width: 28px; height: 28px; border-radius: 50%;
       margin: 0 auto 4px auto;
       display: flex; align-items: center; justify-content: center;
       font-weight: bold; font-size: 12px; color: #ffffff;
     }
-    .promo-name { font-size: 10px; color: #64748b; font-weight: bold; }
+    .promo-name { font-size: 9.5px; color: #64748b; font-weight: bold; }
     .status-bar {
       text-align: center;
       font-size: 11px;
@@ -146,61 +159,33 @@
       background: #38bdf8;
       color: #060b13;
       border: none;
-      padding: 10px 16px;
+      padding: 11px 16px;
       border-radius: 6px;
       font-weight: bold;
+      font-size: 13px;
       cursor: pointer;
       width: 100%;
       margin-top: 4px;
+      transition: background 0.2s;
+    }
+    .btn-refresh:hover {
+      background: #7dd3fc;
+    }
+    .btn-refresh:disabled {
+      background: #334155;
+      color: #94a3b8;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
 
-<div class="main-card">
-  <div class="header">
-    <div class="header-title">
-      <span>REPORTE DE VENTAS DE LA</span>
-      <select id="turnoSelect">
-        <option value="MAÑANA">MAÑANA</option>
-        <option value="NOCHE">NOCHE</option>
-      </select>
-    </div>
-    <div>
-      <input type="date" id="fechaReporte">
-    </div>
-  </div>
-
-  <div class="total-sales-card">
-    TOTAL DE VENTAS: <span class="total-sales-number" id="totalVentasCentral">0</span>
-  </div>
-
-  <div class="chart-box" id="boxBarChart">
-    <div class="chart-title">VENTAS Y PROMOCIONES POR ASESOR</div>
-    <div class="canvas-wrapper">
-      <canvas id="barChart"></canvas>
-    </div>
-  </div>
-
-  <div class="promo-section">
-    <div style="font-size: 12px; font-weight: bold; color: #94a3b8; margin-bottom: 10px;">
-      RESUMEN | TOTAL DE PROMOCIONES: <span id="totalPromosHeader" style="color:#ffffff;">0</span>
-    </div>
-    <div class="promo-grid" id="promoGrid"></div>
-  </div>
-
-  <div class="status-bar">
-    <div id="statusMsg">⏸️ Panel en espera. Presiona actualizar.</div>
-    <div class="last-update" id="lastUpdate">Última actualización: --:--:--</div>
-    <div><span class="version-tag">Versión Código: v2.3</span></div>
-  </div>
-  <button class="btn-refresh" onclick="cargarDesdeGoogleSheets()">⚡ ACTUALIZAR DATOS AHORA</button>
-</div>
+<div id="gruposContainer" style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 26px;"></div>
 
 <script>
   Chart.register(ChartDataLabels);
 
-  const URL_GOOGLE_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_jvQqulBnFxZSj_NaZWpnNSTDkPcZSksGLFR8Lm8M7X6cSKe8hZp-jlnpAQ6KqfbI0Y7OOU7gw1WR/pub?gid=0&single=true&output=csv";
+  const URL_GOOGLE_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT9Ec97OqqEHNXkNDuRIuJoLerBn0-bI_hHqt-K0v1Wnrt58iwrRNMTblMLqnwp-LFYYsP5WjmOmmXv/pub?gid=1739702520&single=true&output=csv";
 
   const coloresNeon = ['#ff6b00', '#00d2ff', '#00ff66', '#e056fd', '#f1c40f', '#ff4757', '#70a1ff', '#2ed573', '#eccc68', '#ff7f50', '#a4b0be', '#a55eea'];
 
@@ -211,12 +196,102 @@
     { nombre: 'CALMANO', color: '#f59e0b' },
     { nombre: 'FLEXACIL', color: '#06b6d4' },
     { nombre: 'ALPHAMAN', color: '#8b5cf6' },
+    { nombre: 'ZEAXAN', color: '#14b8a6' },
+    { nombre: 'DRENAJE LINFATICO', color: '#3b82f6' },
+    { nombre: 'VITAMINA', color: '#eab308' },
     { nombre: 'MIX', color: '#ec4899' }
   ];
 
-  let asesores = [];
-  let conteoProductos = {};
-  let barChart;
+  // Configuración exacta de columnas (0-based) y filas (1-based) según la hoja WEB
+  const GRUPOS_CONFIG = [
+    {
+      id: 1,
+      tituloDefault: "GRUPO 1",
+      colFecha: 2,   // C
+      colAsesor: 3,  // D
+      colVentas: 4,  // E
+      colPromos: 5,  // F
+      filaTitulo: 2,
+      filaInicio: 4,
+      filaFin: 31
+    },
+    {
+      id: 2,
+      tituloDefault: "GRUPO ISMAEL",
+      colFecha: 7,   // H
+      colAsesor: 8,  // I
+      colVentas: 9,  // J
+      colPromos: 10, // K
+      filaTitulo: 2,
+      filaInicio: 4,
+      filaFin: 31
+    },
+    {
+      id: 3,
+      tituloDefault: "GRUPO PRUEBA",
+      colFecha: 12,  // M
+      colAsesor: 13, // N
+      colVentas: 14, // O
+      colPromos: 15, // P
+      filaTitulo: 2,
+      filaInicio: 4,
+      filaFin: 16
+    }
+  ];
+
+  const chartsInstancias = {};
+  const ultimoClickPorGrupo = { 1: 0, 2: 0, 3: 0 };
+
+  function construirTarjetasHTML() {
+    const contenedor = document.getElementById('gruposContainer');
+    contenedor.innerHTML = '';
+
+    GRUPOS_CONFIG.forEach(g => {
+      contenedor.innerHTML += `
+        <div class="main-card" id="cardGrupo_${g.id}">
+          <div class="group-banner" id="tituloGrupo_${g.id}">${g.tituloDefault}</div>
+
+          <div class="header">
+            <div class="header-title">
+              <span>REPORTE DE VENTAS DE LA</span>
+              <span class="locked-badge" id="turnoBadge_${g.id}">--</span>
+            </div>
+            <div>
+              <span class="locked-badge" id="fechaBadge_${g.id}">--/--/----</span>
+            </div>
+          </div>
+
+          <div class="total-sales-card">
+            TOTAL DE VENTAS: <span class="total-sales-number" id="totalVentas_${g.id}">0</span>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-title">VENTAS Y PROMOCIONES POR ASESOR</div>
+            <div class="canvas-wrapper" id="wrapperChart_${g.id}">
+              <canvas id="barChart_${g.id}"></canvas>
+            </div>
+          </div>
+
+          <div class="promo-section">
+            <div style="font-size: 12px; font-weight: bold; color: #94a3b8; margin-bottom: 10px;">
+              RESUMEN | TOTAL DE PROMOCIONES: <span id="totalPromos_${g.id}" style="color:#ffffff;">0</span>
+            </div>
+            <div class="promo-grid" id="promoGrid_${g.id}"></div>
+          </div>
+
+          <div class="status-bar">
+            <div id="statusMsg_${g.id}">⏸️ Panel en espera. Presiona actualizar.</div>
+            <div class="last-update" id="lastUpdate_${g.id}">Última actualización: --:--:--</div>
+            <div><span class="version-tag">Versión Código: v3.0</span></div>
+          </div>
+
+          <button class="btn-refresh" id="btnRefresh_${g.id}" onclick="actualizarGrupo(${g.id})">
+            ⚡ ACTUALIZAR ${g.tituloDefault}
+          </button>
+        </div>
+      `;
+    });
+  }
 
   function parseCSVLine(str) {
     const arr = [];
@@ -224,7 +299,7 @@
     let col = '';
     for (let c = 0; c < str.length; c++) {
       const cc = str[c];
-      const nc = str[c+1];
+      const nc = str[c + 1];
       if (cc === '"') {
         if (quote && nc === '"') { col += '"'; c++; }
         else { quote = !quote; }
@@ -239,23 +314,17 @@
     return arr;
   }
 
-  function actualizarFechaYTurnoAutomatico() {
+  function calcularTurnoYFechaVE() {
     const ahora = new Date();
     const opcionesHora = { timeZone: 'America/Caracas', hour: 'numeric', hour12: false };
-    const horaVE = parseInt(ahora.toLocaleTimeString('es-VE', opcionesHora));
+    const horaVE = parseInt(ahora.toLocaleTimeString('es-VE', opcionesHora), 10);
 
-    const selectTurno = document.getElementById('turnoSelect');
-    if (horaVE >= 6 && horaVE < 18) {
-      selectTurno.value = 'MAÑANA';
-    } else {
-      selectTurno.value = 'NOCHE';
-    }
+    const turno = (horaVE >= 6 && horaVE < 18) ? 'MAÑANA' : 'NOCHE';
 
     const opcionesFecha = { timeZone: 'America/Caracas', year: 'numeric', month: '2-digit', day: '2-digit' };
-    const partesFecha = ahora.toLocaleDateString('es-VE', opcionesFecha).split('/');
-    if (partesFecha.length === 3) {
-      document.getElementById('fechaReporte').value = `${partesFecha[2]}-${partesFecha[1]}-${partesFecha[0]}`;
-    }
+    const fechaStr = ahora.toLocaleDateString('es-VE', opcionesFecha);
+
+    return { turno, fechaStr };
   }
 
   function obtenerHoraVenezuelaFormatted() {
@@ -269,212 +338,25 @@
     });
   }
 
-  async function cargarDesdeGoogleSheets() {
-    actualizarFechaYTurnoAutomatico();
+  function aplicarFechaYTurnoBloqueados(grupoId, fechaHoja = null) {
+    const { turno, fechaStr } = calcularTurnoYFechaVE();
+    document.getElementById(`turnoBadge_${grupoId}`).innerText = turno; document.getElementById(`fechaBadge_${grupoId}`).innerText = fechaHoja || fechaStr;
+  }
 
-    const status = document.getElementById('statusMsg');
-    const updateLabel = document.getElementById('lastUpdate');
-    status.innerText = "🔄 Sincronizando con Google Sheets...";
+  async function actualizarGrupo(grupoId) {
+    const ahora = Date.now();
+    const cooldownMs = 15000; // 15 segundos de protección por botón
+    if (ahora - ultimoClickPorGrupo[grupoId] < cooldownMs) {
+      const rest = Math.ceil((cooldownMs - (ahora - ultimoClickPorGrupo[grupoId])) / 1000);
+      document.getElementById(`statusMsg_${grupoId}`).innerText = `⏳ Espera ${rest}s para volver a consultar este grupo.`;
+      return;
+    }
 
-    try {
-      const response = await fetch(URL_GOOGLE_SHEETS + "&cachebust=" + new Date().getTime());
-      if (!response.ok) throw new Error("HTTP error " + response.status);
-      const csvText = await response.text();
+    ultimoClickPorGrupo[grupoId] = ahora;
+    const status = document.getElementById(`statusMsg_${grupoId}`); const updateLabel = document.getElementById(`lastUpdate_${grupoId}`);
+    const btn = document.getElementById(`btnRefresh_${grupoId}`);  status.innerText = "🔄 Sincronizando datos con Google Sheets..."; btn.disabled = true;  try { const response = await fetch(URL_GOOGLE_SHEETS + "&cachebust=" + ahora); if (!response.ok) throw new Error("HTTP error " + response.status); const csvText = await response.text();  if (csvText.includes("<!DOCTYPE html>") \vert{}\vert{} csvText.length < 15) { throw new Error("Respuesta inválida de Google Sheets"); }  localStorage.setItem(`cached_csv_grupo_${grupoId}`, csvText);
+      procesarGrupoDesdeCSV(grupoId, csvText);
 
-      procesarCSV(csvText);
-      
       const horaVE = obtenerHoraVenezuelaFormatted();
       status.innerText = "✅ Datos sincronizados correctamente";
-      updateLabel.innerText = `🕒 Última actualización: ${horaVE} (UTC-4 Venezuela)`;
-    } catch (error) {
-      console.error("Error al cargar:", error);
-      status.innerText = "⚠️ No se pudo obtener datos automáticamente.";
-    }
-  }
-
-  function procesarCSV(text) {
-    asesores = [];
-    conteoProductos = { 'CARDIOX': 0, 'GLYCONORM': 0, 'PAPAYA': 0, 'CALMANO': 0, 'FLEXACIL': 0, 'ALPHAMAN': 0, 'MIX': 0 };
-
-    const lineas = text.split(/\r?\n/);
-    
-    for (let i = 0; i < Math.min(lineas.length, 6); i++) {
-      const fila = parseCSVLine(lineas[i]);
-      for (let col of fila) {
-        const m = col.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-        if (m) {
-          document.getElementById('fechaReporte').value = `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
-          break;
-        }
-      }
-    }
-
-    let leyendoAsesores = false;
-
-    for (let idx = 0; idx < lineas.length; idx++) {
-      const linea = lineas[idx].trim();
-      if (!linea) continue;
-
-      const columnas = parseCSVLine(linea);
-      const nombreCand = (columnas[3] || '').trim();
-      const ventasCand = parseInt(columnas[4]);
-      const promosStr = (columnas[5] || '').trim();
-      const nombreUpper = nombreCand.toUpperCase();
-
-      if (nombreUpper === 'ASESOR' || nombreUpper === 'NRO VENTAS') {
-        leyendoAsesores = true;
-        continue;
-      }
-
-      if (nombreUpper.includes('TOTAL DE VENTAS') || nombreUpper.includes('TOTAL')) {
-        break;
-      }
-
-      if (leyendoAsesores || (nombreCand && !isNaN(ventasCand))) {
-        const esInvalido = [
-          'TOTAL DE VENTAS', 'NRO VENTAS', 'FECHA', 'ASESOR', 
-          'VENTAS', 'PROMOCIONES', ''
-        ].includes(nombreUpper);
-
-        if (!esInvalido && !isNaN(ventasCand) && ventasCand >= 0) {
-          asesores.push({ nombre: nombreUpper, ventas: ventasCand, promociones: promosStr || '-' });
-
-          if (promosStr && promosStr !== '-') {
-            const promosItems = promosStr.split('/');
-            promosItems.forEach(item => {
-              const pMatch = item.trim().match(/^(\d+)\s+(.+)$/);
-              if (pMatch) {
-                const cant = parseInt(pMatch[1]);
-                let pNombre = pMatch[2].trim().toUpperCase();
-
-                if (pNombre === 'CALAMANO') pNombre = 'CALMANO';
-                if (pNombre === 'GLYCO') pNombre = 'GLYCONORM';
-                if (pNombre === 'FLEXA') pNombre = 'FLEXACIL';
-
-                if (conteoProductos.hasOwnProperty(pNombre)) {
-                  conteoProductos[pNombre] += cant;
-                } else {
-                  conteoProductos[pNombre] = cant;
-                }
-              }
-            });
-          }
-        }
-      }
-    }
-
-    asesores.sort((a, b) => b.ventas - a.ventas);
-
-    asesores = asesores.map((item, i) => ({
-      nombreOriginal: item.nombre,
-      nombreEtiqueta: `${i + 1}. ${item.nombre}`,
-      ventas: item.ventas,
-      promociones: item.promociones
-    }));
-
-    actualizarTodo();
-  }
-
-  function actualizarTodo() {
-    const totalVentas = asesores.reduce((acc, curr) => acc + curr.ventas, 0);
-    document.getElementById('totalVentasCentral').innerText = totalVentas;
-
-    let totalPromos = 0;
-    Object.values(conteoProductos).forEach(c => totalPromos += c);
-    document.getElementById('totalPromosHeader').innerText = totalPromos;
-
-    const pGrid = document.getElementById('promoGrid');
-    pGrid.innerHTML = '';
-    productosCatalogo.forEach(prod => {
-      const cant = conteoProductos[prod.nombre] || 0;
-      pGrid.innerHTML += `
-        <div class="promo-item">
-          <div class="promo-badge" style="background-color: ${cant > 0 ? prod.color : '#334155'};">${cant}</div>
-          <div class="promo-name">${prod.nombre}</div>
-        </div>`;
-    });
-
-    const bgColores = asesores.map((_, i) => coloresNeon[i % coloresNeon.length]);
-
-    const alturaTotalGrafico = Math.max(380, asesores.length * 50);
-    document.querySelector('.canvas-wrapper').style.height = alturaTotalGrafico + 'px';
-
-    const maxVentas = asesores.length > 0 ? Math.max(...asesores.map(a => a.ventas)) : 1;
-
-    if (barChart) barChart.destroy();
-    barChart = new Chart(document.getElementById('barChart'), {
-      type: 'bar',
-      data: {
-        labels: asesores.map(a => a.nombreEtiqueta),
-        datasets: [{ 
-          data: asesores.map(a => a.ventas), 
-          backgroundColor: bgColores, 
-          borderRadius: 5,
-          barPercentage: 0.75,      
-          categoryPercentage: 0.85,
-          promociones: asesores.map(a => a.promociones)
-        }]
-      },
-      options: {
-        indexAxis: 'y', 
-        responsive: true, 
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          datalabels: { 
-            anchor: 'center', 
-            align: 'center', 
-            color: '#000000', 
-            font: { weight: 'bold', size: 10 }, 
-            formatter: (v) => v 
-          },
-          tooltip: { enabled: false }
-        },
-        scales: {
-          x: { 
-            grid: { color: '#1a2f4c' },
-            ticks: { precision: 0, color: '#94a3b8', font: { size: 11 } },
-            min: 0,
-            max: maxVentas === 0 ? 1 : maxVentas
-          },
-          y: {
-            ticks: {
-              color: '#38bdf8',
-              font: { size: 11, weight: 'bold' },
-              autoSkip: false
-            },
-            grid: { display: false }
-          }
-        }
-      },
-      plugins: [{
-        id: 'promoSubLabels',
-        afterDraw(chart) {
-          const { ctx, chartArea, scales } = chart;
-          const yScale = scales.y;
-          const dataset = chart.data.datasets[0];
-          
-          ctx.save();
-          ctx.font = 'bold 9.5px "Segoe UI", Roboto, sans-serif';
-          ctx.fillStyle = '#000000'; // Promociones en negro puro
-
-          dataset.data.forEach((val, index) => {
-            const yPos = yScale.getPixelForTick(index);
-            const promoText = dataset.promociones[index];
-            ctx.fillText(`💊 ${promoText}`, chartArea.left + 5, yPos + 3);
-          });
-          ctx.restore();
-        }
-      }]
-    });
-  }
-
-  // NOTA: Eliminamos la línea que ejecutaba 'cargarDesdeGoogleSheets()' al iniciar la página.
-  // Ahora solo se conectará a Google Sheets cuando hagas clic en el botón de actualizar.
-  window.addEventListener('DOMContentLoaded', () => {
-    actualizarFechaYTurnoAutomatico();
-  });
-</script>
-
-</body>
-</html>
+      updateLabel.innerText = `🕒 Últ
